@@ -1,7 +1,7 @@
 # Experiment - Discrete Roof Generation
 A Unity project file that experiment with Reinforcement Learning using ML-Agents to generate traditional Japanese roof structure with discrete actions.
 
-WARNING: This project is under experimentation and is not production ready.
+WARNING: This project is still work in progress.
 ## Download and install
 - This project requires python 3.7 to be installed
 - This project recommend python virtual environment to be created under the project directory
