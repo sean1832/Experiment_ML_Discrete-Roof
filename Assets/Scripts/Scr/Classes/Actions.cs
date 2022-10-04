@@ -16,9 +16,7 @@ public class Actions : MonoBehaviour
     public void Spawn(GameObject agent, GameObject spawnPoint)
     {
         // set position
-        //agent.transform.localPosition = _utilities.GetGrandRelativePos(spawnPoint);
         agent.transform.position = _utilities.GetRelativePos(spawnPoint, gameObject);
-        //print($"relative position: {_utilities.GetRelativePos(spawnPoint, gameObject)}");
         // set rotation
         GameObject spawnParent = _utilities.GetParent(spawnPoint);
         agent.transform.localEulerAngles = spawnParent.transform.localEulerAngles;
