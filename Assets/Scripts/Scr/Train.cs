@@ -195,7 +195,10 @@ public class Train : Agent
 
                 if (_evaluateAgentBalance)
                 {
-                    _utilities.EvalAgentBalance(_agents);
+                    float multiplier = 20f;
+                    float score = _utilities.EvalAgentBalance(_agents) * multiplier;
+
+                    AddReward(-score);
                 }
 
                 if (_enableExport) // export geometry as prefab
