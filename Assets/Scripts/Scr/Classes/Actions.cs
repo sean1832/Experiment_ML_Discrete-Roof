@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.MLAgents;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -16,9 +14,7 @@ public class Actions : MonoBehaviour
     public void Spawn(GameObject agent, GameObject spawnPoint)
     {
         // set position
-        //agent.transform.localPosition = _utilities.GetGrandRelativePos(spawnPoint);
         agent.transform.position = _utilities.GetRelativePos(spawnPoint, gameObject);
-        //print($"relative position: {_utilities.GetRelativePos(spawnPoint, gameObject)}");
         // set rotation
         GameObject spawnParent = _utilities.GetParent(spawnPoint);
         agent.transform.localEulerAngles = spawnParent.transform.localEulerAngles;
@@ -42,5 +38,21 @@ public class Actions : MonoBehaviour
         fullPath = AssetDatabase.GenerateUniqueAssetPath(fullPath);
         PrefabUtility.SaveAsPrefabAssetAndConnect(copiedObj, fullPath, InteractionMode.UserAction);
         Destroy(copiedObj);
+    }
+
+    public void GenerateRoof(List<GameObject> agents)
+    {
+        
+    }
+
+    public static void GenerateGameObject(List<Vector3> vertices, GameObject parent)
+    {
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            GameObject newObj = new GameObject($"RoofPoint_{i}");
+            newObj.AddComponent<SphereCollider>().radius = 0.2f;
+            newObj.transform.position = vertices[i];
+            newObj.transform.parent = parent.transform;
+        }
     }
 }

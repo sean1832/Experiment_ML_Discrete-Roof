@@ -90,7 +90,7 @@ public class Train : Agent
     {
         _isStarted = true;
         _checkPtnName = _checkPointSample.name;
-        _agents = _utilities.GetChildren(gameObject, _spawnLayer);
+        _agents = Utilities.GetChildren(gameObject, _spawnLayer);
         _agentInitPos = _utilities.GetPositions(_agents);
 
         _roofJoints = _utilities.GetGrandChildren(_roofJointsRoot);
@@ -134,7 +134,7 @@ public class Train : Agent
         }
 
         // observe agent each joint positions
-        List<GameObject> agentJoints = _utilities.GetChildren(_currentAgent, filterName: _checkPtnName);
+        List<GameObject> agentJoints = Utilities.GetChildren(_currentAgent, filterName: _checkPtnName);
         foreach (GameObject agentJoint in agentJoints)
         {
             //Vector3 agentJointPos = _utilities.GetRelativePos(agentJoint, gameObject);

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 
 public class Utilities : MonoBehaviour
@@ -9,14 +10,31 @@ public class Utilities : MonoBehaviour
     public List<GameObject> GetSpawnList(GameObject agent, List<GameObject> agentList, string checkPtName, int nearNum)
     {
         List<GameObject> nearestAgents = GetNearAgents(agent, agentList, nearNum);
-        List<List<GameObject>> spawnPtList = new List<List<GameObject>>();
-        foreach (GameObject nearAgent in nearestAgents)
+
+        List<GameObject> spawnPts = GetJoints(nearestAgents, checkPtName);
+
+        return spawnPts;
+        //List<List<GameObject>> spawnPtList = new List<List<GameObject>>();
+        //foreach (GameObject nearAgent in nearestAgents)
+        //{
+        //    spawnPtList.Add(GetChildren(nearAgent, filterName: checkPtName));
+        //}
+
+        //List<GameObject> spawnPts = Utilities.FlattenList(spawnPtList);
+
+    }
+
+    public static List<GameObject> GetJoints(List<GameObject> agents, string checkPointName)
+    {
+        List<List<GameObject>> jointList = new List<List<GameObject>>();
+
+        foreach (GameObject child in agents)
         {
-            spawnPtList.Add(GetChildren(nearAgent, filterName: checkPtName));
+            List<GameObject> joints = Utilities.GetChildren(child, filterName: checkPointName);
+            jointList.Add(joints);
         }
 
-        List<GameObject> spawnPts = FlattenList(spawnPtList);
-        return spawnPts;
+        return Utilities.FlattenList(jointList);
     }
 
     public List<GameObject> GetSpawnedAgents(GameObject spawnLayer)
@@ -84,7 +102,7 @@ public class Utilities : MonoBehaviour
         return child.transform.parent.gameObject;
     }
 
-    public List<GameObject> GetChildren(GameObject parent, GameObject filter = null, string filterName = null)
+    public static List<GameObject> GetChildren(GameObject parent, GameObject filter = null, string filterName = null)
     {
         List<GameObject> children = new List<GameObject>();
         for (int i = 0; i < parent.transform.childCount; i++)
@@ -105,7 +123,7 @@ public class Utilities : MonoBehaviour
         {
             childrenList.Add(GetChildren(parent));
         }
-        List<GameObject> grandChildren = FlattenList(childrenList);
+        List<GameObject> grandChildren = Utilities.FlattenList(childrenList);
         return grandChildren;
     }
 
@@ -136,7 +154,7 @@ public class Utilities : MonoBehaviour
         return nearAgents;
     }
 
-    public List<T> FlattenList<T>(List<List<T>> sourceList)
+    public static List<T> FlattenList<T>(List<List<T>> sourceList)
     {
         List<T> result = new List<T>();
         foreach (List<T> list in sourceList)
@@ -158,5 +176,79 @@ public class Utilities : MonoBehaviour
             positions.Add(position);
         }
         return positions;
+    }
+
+    public static List<Vector3> ProjectVertices(List<Vector3> vertices, string plane, float offsetDistance)
+    {
+        List<Vector3> flattenVertices = new List<Vector3>();
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            Vector3 v = plane switch
+            {
+                "x" => new Vector3(offsetDistance, vertices[i].y, vertices[i].z),
+                "z" => new Vector3(vertices[i].x, vertices[i].y, offsetDistance),
+                _ => vertices[i]
+            };
+            flattenVertices.Add(v);
+        }
+
+        return flattenVertices;
+    }
+
+    public static List<Vector3> CullDuplicate(List<Vector3> vertices)
+    {
+        List<Vector3> noDup = vertices.Distinct().ToList();
+        return noDup;
+    }
+
+    public static List<Vector3> MoveVertices(List<Vector3> vertices, Vector3 direction, float offsetDistance)
+    {
+        Vector3 offsetFactor = direction * offsetDistance;
+
+        List<Vector3> movedVertices = new List<Vector3>();
+        foreach (var vertex in vertices)
+        {
+            Vector3 movedVertex = vertex + offsetFactor;
+            movedVertices.Add(movedVertex);
+        }
+
+        return movedVertices;
+    }
+
+    public static List<Vector3> GetAllRoofVertices(GameObject resultMesh, string spawnLayerName, string checkPtName)
+    {
+        // set local fields
+        List<GameObject> resultChildren = Utilities.GetChildren(resultMesh, filterName: spawnLayerName);
+        List<GameObject> joints = Utilities.GetJoints(resultChildren, checkPtName);
+
+        // add joint positions to vertices
+        List<Vector3> vertices = new List<Vector3>();
+        foreach (GameObject joint in joints)
+        {
+            vertices.Add(joint.transform.position);
+        }
+
+        // project vertices on plane
+        vertices = Utilities.ProjectVertices(vertices, "x", -5f);
+        vertices = Utilities.CullDuplicate(vertices);
+
+        return vertices;
+    }
+
+    public static List<Vector3> GetTopVertices(List<Vector3> vertices, GameObject ceiling)
+    {
+        List<Vector3> hitVertices = new List<Vector3>();
+
+        foreach (Vector3 vertex in vertices)
+        {
+            var hitInfo = new RaycastHit();
+            Ray ray = new Ray(vertex, Vector3.up);
+            if (!Physics.Raycast(ray, out hitInfo, 20f)) continue;
+            if (hitInfo.collider.gameObject == ceiling)
+            {
+                hitVertices.Add(vertex);
+            }
+        }
+        return hitVertices;
     }
 }
