@@ -11,6 +11,7 @@ public class TestMeshGen : MonoBehaviour
     private List<GameObject> _resultChildren = new List<GameObject>();
     private List<Vector3> vertices = new List<Vector3>();
 
+    private RaycastHit _hitInfo;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,20 +29,26 @@ public class TestMeshGen : MonoBehaviour
         vertices = Utilities.ProjectVertices(vertices, "x", -5f);
         vertices = Utilities.CullDuplicate(vertices);
 
-        RaycastHit hitInfo = new RaycastHit();
-
-        Ray ray = new Ray(vertices[15], Vector3.down);
-        if (Physics.Raycast(ray, out hitInfo, 20f))
+        GameObject newJointsParent = new GameObject("JointsParent");
+        for (int i = 0; i < vertices.Count; i++)
         {
-            print($"hit! hit info is: {hitInfo.collider.gameObject.name}");
+            GameObject newObj = new GameObject($"joint{i}");
+            newObj.AddComponent<SphereCollider>().radius = 0.2f;
+            newObj.transform.position = vertices[i];
+            newObj.transform.parent = newJointsParent.transform;
         }
-        else print("no hit");
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        _hitInfo = new RaycastHit();
+        Ray ray = new Ray(vertices[15], Vector3.down);
+        if (Physics.Raycast(ray, out _hitInfo, 20f))
+        {
+            print($"hit! hit info is: {_hitInfo.collider.gameObject.name}");
+        }
     }
 
     private void OnDrawGizmos()
@@ -49,7 +56,7 @@ public class TestMeshGen : MonoBehaviour
         foreach (Vector3 vertex in vertices)
         {
             Gizmos.DrawSphere(vertex, 0.2f);
-            Gizmos.DrawRay(vertices[15], Vector3.down * 20f);
+            Gizmos.DrawRay(vertices[15], Vector3.down * _hitInfo.distance);
         }
     }
 }
