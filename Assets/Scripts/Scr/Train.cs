@@ -16,6 +16,7 @@ public class Train : Agent
     [SerializeField][Range(1f, 10f)] private float _radiusMultiplier = 2;
     [SerializeField] private bool _enableWallCollision = false;
     [SerializeField][Range(3,15)] private int _nearNum = 4;
+    [SerializeField] private bool _evaluateAgentBalance = false;
 
 
     [Header("Observation parameters")]
@@ -186,11 +187,17 @@ public class Train : Agent
         }
         else if (isRoofCollided) // successfully connect and reach goal
         {
-            if (_idx == _agents.Count - 1)
+            if (_idx == _agents.Count - 1) // connected all and finish
             {
                 print("success");
                 AddReward(+50);
                 SetMaterial(_ground, Color.green);
+
+                if (_evaluateAgentBalance)
+                {
+                    _utilities.EvalAgentBalance(_agents);
+                }
+
                 if (_enableExport) // export geometry as prefab
                 {
                     _actions.ExportAsPrefab(_spawnLayer, _exportPath, _exportPrefabName);

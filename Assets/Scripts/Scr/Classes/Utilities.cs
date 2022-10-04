@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Utilities : MonoBehaviour
@@ -43,30 +44,30 @@ public class Utilities : MonoBehaviour
         return (isCollided, checkCount);
     }
 
-    public float CalcBalanceScore(List<GameObject> agents)
+    public float EvalAgentBalance(List<GameObject> agents)
     {
-        float score = 0;
-
-        float zBalance = 0;
-        float xBalance = 0;
-
-        List<float> agentsZPos = new List<float>();
-        List<float> agentsZNeg = new List<float>();
-
-        List<float> agentsXPos = new List<float>();
-        List<float> agentsXNeg = new List<float>();
+        int agentsZPosCount = 0;
+        int agentsZNegCount = 0;
+        int agentsXPosCount = 0;
+        int agentsXNegCount = 0;
         foreach (var agent in agents)
         {
             float agentZ = agent.transform.position.z;
             float agentX = agent.transform.position.x;
 
-            if (agent)
+            if (agentZ >= 0) agentsZPosCount++;
+            else agentsZNegCount++;
 
-            agentsZPos.Add(agentZ);
-            agentsXPos.Add(agentX);
+            if (agentX >= 0) agentsXPosCount++;
+            else agentsXNegCount++;
         }
+        int zDifference = math.abs(agentsZPosCount - agentsZNegCount);
+        int xDifference = math.abs(agentsXPosCount - agentsXNegCount);
 
+        float zScore = (float)zDifference / (float)agents.Count;
+        float xScore = (float)xDifference / (float)agents.Count;
 
+        float score = (zScore + xScore) / 2;
 
         return score;
     }
