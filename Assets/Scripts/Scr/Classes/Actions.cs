@@ -43,4 +43,10 @@ public class Actions : MonoBehaviour
         PrefabUtility.SaveAsPrefabAssetAndConnect(copiedObj, fullPath, InteractionMode.UserAction);
         Destroy(copiedObj);
     }
+
+    public void GenerateRoof(List<GameObject> agents)
+    {
+
+    }
+
 }
