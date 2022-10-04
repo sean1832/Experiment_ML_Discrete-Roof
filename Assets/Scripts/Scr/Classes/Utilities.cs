@@ -84,7 +84,7 @@ public class Utilities : MonoBehaviour
         return child.transform.parent.gameObject;
     }
 
-    public List<GameObject> GetChildren(GameObject parent, GameObject filter = null, string filterName = null)
+    public static List<GameObject> GetChildren(GameObject parent, GameObject filter = null, string filterName = null)
     {
         List<GameObject> children = new List<GameObject>();
         for (int i = 0; i < parent.transform.childCount; i++)
