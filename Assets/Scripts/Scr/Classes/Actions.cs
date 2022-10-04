@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.MLAgents;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,7 +42,17 @@ public class Actions : MonoBehaviour
 
     public void GenerateRoof(List<GameObject> agents)
     {
-
+        
     }
 
+    public static void GenerateGameObject(List<Vector3> vertices, GameObject parent)
+    {
+        for (int i = 0; i < vertices.Count; i++)
+        {
+            GameObject newObj = new GameObject($"RoofPoint_{i}");
+            newObj.AddComponent<SphereCollider>().radius = 0.2f;
+            newObj.transform.position = vertices[i];
+            newObj.transform.parent = parent.transform;
+        }
+    }
 }

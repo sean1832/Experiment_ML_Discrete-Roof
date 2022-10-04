@@ -201,4 +201,54 @@ public class Utilities : MonoBehaviour
         return noDup;
     }
 
+    public static List<Vector3> MoveVertices(List<Vector3> vertices, Vector3 direction, float offsetDistance)
+    {
+        Vector3 offsetFactor = direction * offsetDistance;
+
+        List<Vector3> movedVertices = new List<Vector3>();
+        foreach (var vertex in vertices)
+        {
+            Vector3 movedVertex = vertex + offsetFactor;
+            movedVertices.Add(movedVertex);
+        }
+
+        return movedVertices;
+    }
+
+    public static List<Vector3> GetAllRoofVertices(GameObject resultMesh, string spawnLayerName, string checkPtName)
+    {
+        // set local fields
+        List<GameObject> resultChildren = Utilities.GetChildren(resultMesh, filterName: spawnLayerName);
+        List<GameObject> joints = Utilities.GetJoints(resultChildren, checkPtName);
+
+        // add joint positions to vertices
+        List<Vector3> vertices = new List<Vector3>();
+        foreach (GameObject joint in joints)
+        {
+            vertices.Add(joint.transform.position);
+        }
+
+        // project vertices on plane
+        vertices = Utilities.ProjectVertices(vertices, "x", -5f);
+        vertices = Utilities.CullDuplicate(vertices);
+
+        return vertices;
+    }
+
+    public static List<Vector3> GetTopVertices(List<Vector3> vertices, GameObject ceiling)
+    {
+        List<Vector3> hitVertices = new List<Vector3>();
+
+        foreach (Vector3 vertex in vertices)
+        {
+            var hitInfo = new RaycastHit();
+            Ray ray = new Ray(vertex, Vector3.up);
+            if (!Physics.Raycast(ray, out hitInfo, 20f)) continue;
+            if (hitInfo.collider.gameObject == ceiling)
+            {
+                hitVertices.Add(vertex);
+            }
+        }
+        return hitVertices;
+    }
 }
