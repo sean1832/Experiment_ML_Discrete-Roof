@@ -65,20 +65,30 @@ public class TestMeshGen : MonoBehaviour
         // create a new gameObject
         GameObject roof = new GameObject("roof");
 
-        roof.AddComponent<MeshRenderer>();
+        roof.AddComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
         roof.AddComponent<MeshFilter>().mesh = mesh;
 
-        Vector3[] triangleVertices = new Vector3[4];
-        for (int i = 0; i < 4; i++)
+        Vector3[] triangleVertices = vertices.ToArray();
+
+        int vert = 0;
+        int tri = 0;
+
+        int[] triangle = new int[((vertices.Count/2)-1) * 6];
+
+        for (int i = 0; i < (vertices.Count/2)-1; i++)
         {
-            triangleVertices[i] = vertices[i];
+            triangle[tri] = vert + 0;
+            triangle[tri+1] = vert + 2;
+            triangle[tri+2] = vert + 1;
+
+            triangle[tri+3] = vert + 2;
+            triangle[tri+4] = vert + 3;
+            triangle[tri+5] = vert + 1;
+
+            vert += 2;
+            tri += 6;
         }
 
-        int[] triangle = new int[]
-        {
-            0,2,1,
-            2,3,1
-        };
 
         return (triangleVertices, triangle);
 
@@ -89,5 +99,6 @@ public class TestMeshGen : MonoBehaviour
         mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.RecalculateNormals();
     }
 }
