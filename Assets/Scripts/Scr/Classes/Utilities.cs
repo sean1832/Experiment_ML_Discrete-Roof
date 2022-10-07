@@ -201,7 +201,7 @@ public class Utilities : MonoBehaviour
         return noDup;
     }
 
-    public static List<Vector3> MoveVertices(List<Vector3> vertices, Vector3 direction, float offsetDistance)
+    public static List<Vector3> OffsetVertices(List<Vector3> vertices, Vector3 direction, float offsetDistance)
     {
         Vector3 offsetFactor = direction * offsetDistance;
 
