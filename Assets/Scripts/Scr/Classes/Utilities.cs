@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Schema;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -178,77 +180,56 @@ public class Utilities : MonoBehaviour
         return positions;
     }
 
-    public static List<Vector3> ProjectVertices(List<Vector3> vertices, string plane, float offsetDistance)
-    {
-        List<Vector3> flattenVertices = new List<Vector3>();
-        for (int i = 0; i < vertices.Count; i++)
-        {
-            Vector3 v = plane switch
-            {
-                "x" => new Vector3(offsetDistance, vertices[i].y, vertices[i].z),
-                "z" => new Vector3(vertices[i].x, vertices[i].y, offsetDistance),
-                _ => vertices[i]
-            };
-            flattenVertices.Add(v);
-        }
-
-        return flattenVertices;
-    }
-
     public static List<Vector3> CullDuplicate(List<Vector3> vertices)
     {
         List<Vector3> noDup = vertices.Distinct().ToList();
         return noDup;
     }
 
-    public static List<Vector3> OffsetVertices(List<Vector3> vertices, Vector3 direction, float offsetDistance)
+    public static (float x, float y, float z) GetBounds(List<GameObject> objects, string maxOrMin)
     {
-        Vector3 offsetFactor = direction * offsetDistance;
+        List<float> x = new List<float>();
+        List<float> y = new List<float>();
+        List<float> z = new List<float>();
 
-        List<Vector3> movedVertices = new List<Vector3>();
-        foreach (var vertex in vertices)
+        foreach (GameObject obj in objects)
         {
-            Vector3 movedVertex = vertex + offsetFactor;
-            movedVertices.Add(movedVertex);
+            x.Add(obj.transform.position.x);
+            y.Add(obj.transform.position.y);
+            z.Add(obj.transform.position.z);
         }
 
-        return movedVertices;
-    }
-
-    public static List<Vector3> GetProjectedVertices(GameObject resultMesh, string projectionPlane, float offsetDistance, string spawnLayerName, string checkPtName)
-    {
-        // set local fields
-        List<GameObject> resultChildren = Utilities.GetChildren(resultMesh, filterName: spawnLayerName);
-        List<GameObject> joints = Utilities.GetJoints(resultChildren, checkPtName);
-
-        // add joint positions to vertices
-        List<Vector3> vertices = new List<Vector3>();
-        foreach (GameObject joint in joints)
+        switch (maxOrMin)
         {
-            vertices.Add(joint.transform.position);
+            case "max" or "Max":
+                return (x.Max(), y.Max(), z.Max());
+            case "min" or "Min":
+                return (x.Min(), y.Min(), z.Min());
+            default:
+                throw new ArgumentException($"MinOrMax value: ({maxOrMin}) not accepted, please enter either min or max");
         }
-
-        // project vertices on plane
-        vertices = Utilities.ProjectVertices(vertices, projectionPlane, offsetDistance);
-        vertices = Utilities.CullDuplicate(vertices);
-
-        return vertices;
     }
-
-    public static List<Vector3> GetTopVertices(List<Vector3> vertices, GameObject ceiling)
+    public static (float x, float y, float z) GetBounds(List<Vector3> vertices, string maxOrMin)
     {
-        List<Vector3> hitVertices = new List<Vector3>();
+        List<float> x = new List<float>();
+        List<float> y = new List<float>();
+        List<float> z = new List<float>();
 
         foreach (Vector3 vertex in vertices)
         {
-            var hitInfo = new RaycastHit();
-            Ray ray = new Ray(vertex, Vector3.up);
-            if (!Physics.Raycast(ray, out hitInfo, 20f)) continue;
-            if (hitInfo.collider.gameObject == ceiling)
-            {
-                hitVertices.Add(vertex);
-            }
+            x.Add(vertex.x);
+            y.Add(vertex.y);
+            z.Add(vertex.z);
         }
-        return hitVertices;
+
+        switch (maxOrMin)
+        {
+            case "max" or "Max":
+                return (x.Max(), y.Max(), z.Max());
+            case "min" or "Min":
+                return (x.Min(), y.Min(), z.Min());
+            default:
+                throw new ArgumentException($"MinOrMax value: ({maxOrMin}) not accepted, please enter either min or max");
+        }
     }
 }

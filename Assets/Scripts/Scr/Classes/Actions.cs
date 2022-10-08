@@ -40,19 +40,5 @@ public class Actions : MonoBehaviour
         Destroy(copiedObj);
     }
 
-    public void GenerateRoof(List<GameObject> agents)
-    {
-        
-    }
 
-    public static void GenerateGameObject(List<Vector3> vertices, GameObject parent)
-    {
-        for (int i = 0; i < vertices.Count; i++)
-        {
-            GameObject newObj = new GameObject($"RoofPoint_{i}");
-            newObj.AddComponent<SphereCollider>().radius = 0.2f;
-            newObj.transform.position = vertices[i];
-            newObj.transform.parent = parent.transform;
-        }
-    }
 }
