@@ -55,13 +55,6 @@ public class ProRoof : MonoBehaviour
         return roof;
     }
 
-
-    public void DestroyRoof()
-    {
-
-    }
-
-
     public static GameObject CreateCeiling(GameObject resultMesh)
     {
         List<GameObject> joints = GetJoints(resultMesh);
@@ -74,10 +67,13 @@ public class ProRoof : MonoBehaviour
 
         // adjust height, location and size of ceiling
         ceiling.transform.position = center; // center
-        ceiling.transform.position += new Vector3(0, yMax / 2, 0); // height
+        ceiling.transform.position += new Vector3(0, yMax+10, 0); // height
 
         float scaleVal = 3f;
         ceiling.transform.localScale = new Vector3(scaleVal, scaleVal, scaleVal);
+
+        // rotate 180
+        ceiling.transform.eulerAngles = new Vector3(0, 0, 180);
 
         return ceiling;
     }
