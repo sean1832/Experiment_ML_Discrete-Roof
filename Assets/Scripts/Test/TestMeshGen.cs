@@ -21,7 +21,7 @@ public class TestMeshGen : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        vertices = Utilities.GetAllRoofVertices(_resultMesh, "Spawn", "checkPoint");
+        vertices = Utilities.GetProjectedVertices(_resultMesh, "x", -5f, "Spawn", "checkPoint");
         Actions.GenerateGameObject(vertices, _roofPointLayer);
         _isStarted = true;
         StartCoroutine(WaitBeforeRayCase());

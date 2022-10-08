@@ -215,7 +215,7 @@ public class Utilities : MonoBehaviour
         return movedVertices;
     }
 
-    public static List<Vector3> GetAllRoofVertices(GameObject resultMesh, string spawnLayerName, string checkPtName)
+    public static List<Vector3> GetProjectedVertices(GameObject resultMesh, string projectionPlane, float offsetDistance, string spawnLayerName, string checkPtName)
     {
         // set local fields
         List<GameObject> resultChildren = Utilities.GetChildren(resultMesh, filterName: spawnLayerName);
@@ -229,7 +229,7 @@ public class Utilities : MonoBehaviour
         }
 
         // project vertices on plane
-        vertices = Utilities.ProjectVertices(vertices, "x", -5f);
+        vertices = Utilities.ProjectVertices(vertices, projectionPlane, offsetDistance);
         vertices = Utilities.CullDuplicate(vertices);
 
         return vertices;

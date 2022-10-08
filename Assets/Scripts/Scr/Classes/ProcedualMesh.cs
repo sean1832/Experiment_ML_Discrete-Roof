@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProcedualMesh : MonoBehaviour
 {
-    public static List<Vector3> GetTopVertices(List<Vector3> vertices, GameObject ceiling)
+    public static List<Vector3> GetRoofVertices(List<Vector3> vertices, GameObject ceiling)
     {
         List<Vector3> hitVertices = new List<Vector3>();
 

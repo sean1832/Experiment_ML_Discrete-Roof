@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class Train : Agent
@@ -89,7 +91,9 @@ public class Train : Agent
     private void InitFields()
     {
         _isStarted = true;
+
         _checkPtnName = _checkPointSample.name;
+
         _agents = Utilities.GetChildren(gameObject, _spawnLayer);
         _agentInitPos = _utilities.GetPositions(_agents);
 
