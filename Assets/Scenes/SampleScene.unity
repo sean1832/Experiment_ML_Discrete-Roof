@@ -204,7 +204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &642900145
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -804,8 +804,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _resultMesh: {fileID: 1624154197}
-  _ceiling: {fileID: 642900144}
-  _roofPointLayer: {fileID: 1643401236}
 --- !u!1 &1643401236
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,7 +819,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1643401237
 Transform:
   m_ObjectHideFlags: 0
@@ -920,8 +918,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _resultMesh: {fileID: 1740189721}
-  _ceiling: {fileID: 642900144}
-  _roofPointLayer: {fileID: 1643401236}
 --- !u!1001 &1828123876
 PrefabInstance:
   m_ObjectHideFlags: 0
