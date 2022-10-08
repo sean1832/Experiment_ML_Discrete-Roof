@@ -6,7 +6,7 @@ public class ProMeshConstruct : MonoBehaviour
 {
 
 
-    public static void ConstructMesh(List<Vector3> vertices, bool reverseTriangle, GameObject parent = null)
+    public static GameObject ConstructMesh(List<Vector3> vertices, bool reverseTriangle, GameObject parent = null)
     {
         int[] triangles = ProMeshConstruct.GetTriangleVertices(vertices, 1, reverseTriangle);
 
@@ -30,6 +30,8 @@ public class ProMeshConstruct : MonoBehaviour
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
         mesh.RecalculateTangents();
+        
+        return roofSub;
     }
 
 

@@ -8,7 +8,7 @@ public class ProMeshUtilities : MonoBehaviour
     #region highlevel functions
 
     // spawn gameObjects at vertices locations
-    public static void GenerateObjAtVertices(List<Vector3> vertices, GameObject parent = null)
+    public static void GenerateColliderAtVertices(List<Vector3> vertices, GameObject parent = null)
     {
         for (int i = 0; i < vertices.Count; i++)
         {
@@ -56,7 +56,7 @@ public class ProMeshUtilities : MonoBehaviour
         return hitVertices;
     }
 
-    public static List<Vector3> GetProjectedVertices(GameObject resultMesh, string projectionPlane, float projectDistanceMultiplier, string spawnLayerName, string checkPtName)
+    public static List<Vector3> GetProjectedVertices(GameObject resultMesh, string projectionPlane, float overhangDistance, string spawnLayerName, string checkPtName)
     {
         // set local fields
         List<GameObject> resultChildren = Utilities.GetChildren(resultMesh, filterName: spawnLayerName);
@@ -78,7 +78,7 @@ public class ProMeshUtilities : MonoBehaviour
             default: throw new ArgumentOutOfRangeException($"Projection Plane ({projectionPlane}) not accepted, please enter a valid plane. Plane option: x, y, z");
         }
 
-        projectDistance *= projectDistanceMultiplier;
+        projectDistance -= overhangDistance;
 
         // add joint positions to vertices
         List<Vector3> vertices = new List<Vector3>();
@@ -92,6 +92,25 @@ public class ProMeshUtilities : MonoBehaviour
         vertices = Utilities.CullDuplicate(vertices);
 
         return vertices;
+    }
+
+    public static GameObject CombineMeshes(List<GameObject> sourceObj, GameObject targetObj)
+    {
+        var combine = new CombineInstance[sourceObj.Count];
+
+        for (int i = 0; i < sourceObj.Count; i++)
+        {
+            MeshFilter sourceFilter = sourceObj[i].GetComponent<MeshFilter>();
+            combine[i].mesh = sourceFilter.sharedMesh;
+            combine[i].transform = sourceFilter.transform.localToWorldMatrix;
+        }
+        var mesh = new Mesh();
+        mesh.CombineMeshes(combine);
+
+        targetObj.AddComponent<MeshFilter>().mesh = mesh;
+        targetObj.AddComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
+
+        return targetObj;
     }
 
     #endregion

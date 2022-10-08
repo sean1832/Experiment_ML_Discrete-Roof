@@ -15,29 +15,30 @@ public class TestMeshGen : MonoBehaviour
     private List<Vector3> _hitVertices;
     private bool _isStarted = false;
 
+    private string projectionPlane = "x";
+    private float OverhangeDistance = 3f;
+
+
     // Start is called before the first frame update
     void Start()
     {
-        _projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, "x", 3f,"Spawn", "checkPoint");
-        ProMeshUtilities.GenerateObjAtVertices(_projectedVertices, _roofPointLayer);
-        _isStarted = true;
+        _projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, projectionPlane, OverhangeDistance, "Spawn", "checkPoint");
+        ProMeshUtilities.GenerateColliderAtVertices(_projectedVertices, _roofPointLayer); 
+        GameObject roofParent = ProRoof.CreateContainerObj().roof;
+
         StartCoroutine(WaitBeforeRayCast(0.05f));
+
+        IEnumerator WaitBeforeRayCast(float waitSecond)
+        {
+            yield return new WaitForSeconds(waitSecond);
+
+            _hitVertices = ProMeshUtilities.GetRaycastCeilingVert(_projectedVertices, _ceiling);
+
+            GameObject roof = ProRoof.CreateRoof(_hitVertices, _resultMesh, projectionPlane, OverhangeDistance, roofParent);
+        }
     }
+    
 
-    IEnumerator WaitBeforeRayCast(float waitSecond)
-    {
-        yield return new WaitForSeconds(waitSecond);
-        _hitVertices = ProMeshUtilities.GetRaycastCeilingVert(_projectedVertices, _ceiling);
-
-        List<Vector3> movedVertices = ProMeshUtilities.GetOffsetVertices(_hitVertices, new Vector3(1, 0, 0), 20f);
-        _hitVertices.AddRange(movedVertices);
-        _hitVertices = _hitVertices.OrderBy(v => v.z).ToList();
-
-
-        GameObject roofParent = new GameObject("roof");
-        ProMeshConstruct.ConstructMesh(_hitVertices, false, roofParent);
-        ProMeshConstruct.ConstructMesh(_hitVertices,true, roofParent);
-    }
 
     private void OnDrawGizmos()
     {

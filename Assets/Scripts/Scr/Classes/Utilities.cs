@@ -186,7 +186,7 @@ public class Utilities : MonoBehaviour
         return noDup;
     }
 
-    public static (float x, float y, float z) GetBounds(List<GameObject> objects, string maxOrMin)
+    public static (float x, float y, float z, Vector3 center) GetBounds(List<GameObject> objects, string maxOrMin)
     {
         List<float> x = new List<float>();
         List<float> y = new List<float>();
@@ -199,12 +199,14 @@ public class Utilities : MonoBehaviour
             z.Add(obj.transform.position.z);
         }
 
+        Vector3 center = new Vector3(x.Average(), y.Average(), z.Average());
+
         switch (maxOrMin)
         {
             case "max" or "Max":
-                return (x.Max(), y.Max(), z.Max());
+                return (x.Max(), y.Max(), z.Max(), center);
             case "min" or "Min":
-                return (x.Min(), y.Min(), z.Min());
+                return (x.Min(), y.Min(), z.Min(), center);
             default:
                 throw new ArgumentException($"MinOrMax value: ({maxOrMin}) not accepted, please enter either min or max");
         }
