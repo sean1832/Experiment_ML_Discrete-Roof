@@ -10,12 +10,12 @@ public class ProRoof : MonoBehaviour
     public GameObject CreateRoof(GameObject resultedStructure)
     {
         string projectionPlane = "x";
-        float OverhangeDistance = 3f;
+        float overhangDistance = 3f;
 
         (GameObject roofPointLayer, GameObject targetRoofObj, GameObject exportPackage) = ProRoof.CreateContainerObj();
         GameObject ceiling = ProRoof.CreateCeiling(resultedStructure);
 
-        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(resultedStructure, projectionPlane, OverhangeDistance, "checkPoint");
+        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(resultedStructure, projectionPlane, overhangDistance, "checkPoint");
         ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer);
 
         StartCoroutine(WaitBeforeRayCast(0.05f));
@@ -26,14 +26,13 @@ public class ProRoof : MonoBehaviour
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
             ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
 
-            GameObject roof = ProRoof.ConstructRoof(hitVertices, resultedStructure, projectionPlane, OverhangeDistance, targetRoofObj);
+            GameObject roof = ProRoof.ConstructRoof(hitVertices, resultedStructure, projectionPlane, overhangDistance, targetRoofObj);
             Utilities.SetParent(roof, exportPackage);
             Utilities.SetParent(resultedStructure, exportPackage);
         }
 
         return exportPackage;
     }
-
 
 
 
