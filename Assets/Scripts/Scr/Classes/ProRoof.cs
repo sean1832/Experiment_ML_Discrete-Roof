@@ -78,7 +78,7 @@ public class ProRoof : MonoBehaviour
         return ceiling;
     }
  
-    public static (GameObject roofPointLayer, GameObject roof) CreateContainerObj()
+    public static (GameObject roofPointLayer, GameObject roof, GameObject exportPackage) CreateContainerObj()
     {
         // generate roofPoints
         GameObject roofPointLayer = new GameObject("roofPoints");
@@ -86,7 +86,10 @@ public class ProRoof : MonoBehaviour
         // create roof layer
         GameObject roof = new GameObject("roof");
 
-        return (roofPointLayer, roof);
+        // create export package layer
+        GameObject exportPackage = new GameObject("exportPackage");
+
+        return (roofPointLayer, roof, exportPackage);
     }
 
     public static void DestroyContainerObj(GameObject item1, GameObject item2)

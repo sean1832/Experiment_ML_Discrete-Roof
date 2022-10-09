@@ -10,14 +10,13 @@ public class TestMeshGen : MonoBehaviour
 {
     [SerializeField] private GameObject _resultMesh;
 
-    [SerializeField] private GameObject _spawnTest;
     // Start is called before the first frame update
     void Start()
     {
         string projectionPlane = "x";
         float OverhangeDistance = 3f;
 
-        (GameObject roofPointLayer,GameObject targetRoofObj) = ProRoof.CreateContainerObj();
+        (GameObject roofPointLayer,GameObject targetRoofObj, GameObject exportPackage) = ProRoof.CreateContainerObj();
         GameObject ceiling = ProRoof.CreateCeiling(_resultMesh);
 
         List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, projectionPlane, OverhangeDistance, "checkPoint");
@@ -29,13 +28,11 @@ public class TestMeshGen : MonoBehaviour
         {
             yield return new WaitForSeconds(waitSecond);
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
-            GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
-            // insert roof into spawnLayer
-            Utilities.SetParent(roof, _spawnTest);
-            // insert structure into spawnLayer
-            Utilities.SetParent(gameObject, _spawnTest);
-
             ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
+
+            GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
+            Utilities.SetParent(roof, exportPackage);
+            Utilities.SetParent(gameObject, exportPackage);
         }
     }
     
