@@ -61,9 +61,6 @@ public class Train : Agent
     private Decision _decision;
     private ProRoof _proRoof;
 
-    // export
-    private GameObject _exportPackage;
-
 
     private bool _isStarted = false;
 
@@ -167,7 +164,7 @@ public class Train : Agent
         // turn off current agent collision (prevent self collision detection)
         _actions.EnableAgentCollider(_currentAgent, false);
 
-        GameObject checkPt = _utilities.SearchChild(_currentAgent, _checkPtnName);
+        GameObject checkPt = Utilities.SearchChild(_currentAgent, _checkPtnName);
 
         GameObject spawnPt = _decision.ChoseSpawnPt(spawnChoice, _spawnList);
         _actions.Spawn(_currentAgent, spawnPt);
@@ -208,10 +205,22 @@ public class Train : Agent
 
                 if (_enableRoofGeneration)
                 {
-                    _exportPackage = _proRoof.CreateRoof(_spawnLayer);
+                    var exportPackage = _proRoof.CreateRoof(_spawnLayer);
+
+                    if (_enableExport)
+                    {
+                        StartCoroutine(ExecuteAfter());
+                        IEnumerator ExecuteAfter()
+                        {
+                            yield return new WaitForSeconds(0.05f);
+                            _actions.ExportAsPrefab(exportPackage, _exportPath, _exportPrefabName);
+                        }
+                    }
+
+                    Destroy(exportPackage,0.1f);
                 }
 
-                if (_enableExport) // export geometry as prefab
+                if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
                 {
                     _actions.ExportAsPrefab(_spawnLayer, _exportPath, _exportPrefabName);
                 }
@@ -324,7 +333,7 @@ public class Train : Agent
         int spawnNum = _nearNum * 2;
         for (int i = 0; i < spawnNum; i++)
         {
-            _spawnList.Add(_utilities.SearchChild(_agents[0], "pt2"));
+            _spawnList.Add(Utilities.SearchChild(_agents[0], "pt2"));
         }
     }
 
@@ -335,7 +344,7 @@ public class Train : Agent
     private void OnDrawGizmos()
     {
         if (!_isStarted) return;
-        GameObject agentCheckPt = _utilities.SearchChild(_currentAgent, _checkPtnName);
+        GameObject agentCheckPt = Utilities.SearchChild(_currentAgent, _checkPtnName);
         DrawSphere(Color.red, agentCheckPt.transform.position, _checkPtRadius);
 
         foreach (GameObject joint in _roofJoints)

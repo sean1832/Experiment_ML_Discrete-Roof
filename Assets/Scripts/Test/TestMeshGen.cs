@@ -17,15 +17,8 @@ public class TestMeshGen : MonoBehaviour
     {
         _proRoof = gameObject.AddComponent<ProRoof>();
 
-        _proRoof.CreateRoof(_resultMesh);
-        StartCoroutine(ExecuteOrder());
+        var exportPackage = _proRoof.CreateRoof(_resultMesh, true);
 
-
-        IEnumerator ExecuteOrder()
-        {
-            yield return new WaitForSeconds(0.05f);
-            print("finish");
-        }
         //string projectionPlane = "x";
         //float OverhangeDistance = 3f;
 

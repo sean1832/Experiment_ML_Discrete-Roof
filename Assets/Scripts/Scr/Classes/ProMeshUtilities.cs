@@ -109,6 +109,7 @@ public class ProMeshUtilities : MonoBehaviour
 
         targetObj.AddComponent<MeshFilter>().mesh = mesh;
         targetObj.AddComponent<MeshRenderer>().material = new Material(Shader.Find("Standard"));
+        targetObj.GetComponent<MeshFilter>().mesh.name = "Procedural Roof Mesh";
 
         return targetObj;
     }

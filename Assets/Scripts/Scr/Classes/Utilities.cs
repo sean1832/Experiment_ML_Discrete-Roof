@@ -130,7 +130,7 @@ public class Utilities : MonoBehaviour
     }
 
 
-    public GameObject SearchChild(GameObject parent, string filterName)
+    public static GameObject SearchChild(GameObject parent, string filterName)
     {
         GameObject[] foundChild = new GameObject[1];
         for (int i = 0; i < parent.transform.childCount; i++)
@@ -247,4 +247,5 @@ public class Utilities : MonoBehaviour
     {
         child.transform.SetParent(parent.transform);
     }
+
 }

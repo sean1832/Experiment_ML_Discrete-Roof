@@ -7,16 +7,18 @@ using UnityEngine;
 
 public class ProRoof : MonoBehaviour
 {
-    public GameObject CreateRoof(GameObject resultedStructure)
+    public GameObject CreateRoof(GameObject resultedStructure, bool debugMode = false)
     {
-        
+        var instanceStructure = debugMode ? resultedStructure : Instantiate(resultedStructure);
+
+        //GameObject copiedStructure = Instantiate(resultedStructure);
         string projectionPlane = "x";
         float overhangDistance = 3f;
 
         (GameObject roofPointLayer, GameObject targetRoofObj, GameObject exportPackage) = ProRoof.CreateContainerObj();
-        GameObject ceiling = ProRoof.CreateCeiling(resultedStructure);
+        GameObject ceiling = ProRoof.CreateCeiling(instanceStructure);
 
-        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(resultedStructure, projectionPlane, overhangDistance, "checkPoint");
+        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(instanceStructure, projectionPlane, overhangDistance, "checkPoint");
         ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer);
 
         StartCoroutine(WaitBeforeRayCast(0.05f));
@@ -24,13 +26,14 @@ public class ProRoof : MonoBehaviour
         IEnumerator WaitBeforeRayCast(float waitSecond)
         {
             yield return new WaitForSeconds(waitSecond);
-            print("Start");
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
             ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
 
-            GameObject roof = ProRoof.ConstructRoof(hitVertices, resultedStructure, projectionPlane, overhangDistance, targetRoofObj);
+            GameObject roof = ProRoof.ConstructRoof(hitVertices, instanceStructure, projectionPlane, overhangDistance, targetRoofObj);
             Utilities.SetParent(roof, exportPackage);
-            Utilities.SetParent(resultedStructure, exportPackage);
+            Utilities.SetParent(instanceStructure, exportPackage);
+
+            //print($"overall vertices: {projectedVertices.Count}, hit Vertices: {hitVertices.Count}");
         }
 
         return exportPackage;
