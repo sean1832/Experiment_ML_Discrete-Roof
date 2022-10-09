@@ -34,25 +34,23 @@ public class Actions : MonoBehaviour
     {
         GameObject copiedObj = Instantiate(rootObj);
         if (customName == string.Empty) customName = rootObj.name;
-        string fullPath = path + customName + ".prefab";
-        fullPath = AssetDatabase.GenerateUniqueAssetPath(fullPath);
-        PrefabUtility.SaveAsPrefabAssetAndConnect(copiedObj, fullPath, InteractionMode.UserAction);
+        string prefabPath = path + customName + ".prefab";
+        prefabPath = AssetDatabase.GenerateUniqueAssetPath(prefabPath);
+
+        // export roof mesh
+        GameObject roofObj = Utilities.SearchChild(copiedObj, "roof");
+        Mesh roofMesh = roofObj.GetComponent<MeshFilter>().mesh;
+        string roofMeshPath = $"{path}/mesh/{customName}.asset";
+        roofMeshPath = AssetDatabase.GenerateUniqueAssetPath(roofMeshPath);
+        // save mesh
+        AssetDatabase.CreateAsset(roofMesh, roofMeshPath);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        // save prefab
+        PrefabUtility.SaveAsPrefabAssetAndConnect(copiedObj, prefabPath, InteractionMode.UserAction);
         Destroy(copiedObj);
     }
 
-    public void GenerateRoof(List<GameObject> agents)
-    {
-        
-    }
 
-    public static void GenerateGameObject(List<Vector3> vertices, GameObject parent)
-    {
-        for (int i = 0; i < vertices.Count; i++)
-        {
-            GameObject newObj = new GameObject($"RoofPoint_{i}");
-            newObj.AddComponent<SphereCollider>().radius = 0.2f;
-            newObj.transform.position = vertices[i];
-            newObj.transform.parent = parent.transform;
-        }
-    }
 }

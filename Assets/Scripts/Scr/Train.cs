@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class Train : Agent
@@ -17,6 +19,7 @@ public class Train : Agent
     [SerializeField] private bool _enableWallCollision = false;
     [SerializeField][Range(3,15)] private int _nearNum = 4;
     [SerializeField] private bool _evaluateAgentBalance = false;
+    [SerializeField] private bool _enableRoofGeneration = false;
 
 
     [Header("Observation parameters")]
@@ -47,7 +50,6 @@ public class Train : Agent
 
     // observation
     private List<GameObject> _roofJoints = new List<GameObject>();
-
     private bool _isWallCollided = false;
 
     // ml Param
@@ -57,6 +59,8 @@ public class Train : Agent
     private Actions _actions;
     private Utilities _utilities;
     private Decision _decision;
+    private ProRoof _proRoof;
+
 
     private bool _isStarted = false;
 
@@ -72,15 +76,11 @@ public class Train : Agent
 
     private void InitClass()
     {
-        // add class
-        gameObject.AddComponent<Actions>();
-        gameObject.AddComponent<Utilities>();
-        gameObject.AddComponent<Decision>();
-
-        // assign class
-        _actions = gameObject.GetComponent<Actions>();
-        _utilities = gameObject.GetComponent<Utilities>();
-        _decision = gameObject.GetComponent<Decision>();
+        // add and assign class
+        _actions = gameObject.AddComponent<Actions>();
+        _utilities = gameObject.AddComponent<Utilities>();
+        _decision = gameObject.AddComponent<Decision>();
+        _proRoof = gameObject.AddComponent<ProRoof>();
 
         // init class
         _actions.Init();
@@ -89,7 +89,9 @@ public class Train : Agent
     private void InitFields()
     {
         _isStarted = true;
+
         _checkPtnName = _checkPointSample.name;
+
         _agents = Utilities.GetChildren(gameObject, _spawnLayer);
         _agentInitPos = _utilities.GetPositions(_agents);
 
@@ -162,7 +164,7 @@ public class Train : Agent
         // turn off current agent collision (prevent self collision detection)
         _actions.EnableAgentCollider(_currentAgent, false);
 
-        GameObject checkPt = _utilities.SearchChild(_currentAgent, _checkPtnName);
+        GameObject checkPt = Utilities.SearchChild(_currentAgent, _checkPtnName);
 
         GameObject spawnPt = _decision.ChoseSpawnPt(spawnChoice, _spawnList);
         _actions.Spawn(_currentAgent, spawnPt);
@@ -187,12 +189,12 @@ public class Train : Agent
         }
         else if (isRoofCollided) // successfully connect and reach goal
         {
+            #region Finish
             if (_idx == _agents.Count - 1) // connected all and finish
             {
                 print("success");
                 AddReward(+50);
                 SetMaterial(_ground, Color.green);
-
                 if (_evaluateAgentBalance)
                 {
                     float multiplier = 20f;
@@ -201,11 +203,30 @@ public class Train : Agent
                     AddReward(-score);
                 }
 
-                if (_enableExport) // export geometry as prefab
+                if (_enableRoofGeneration)
+                {
+                    var exportPackage = _proRoof.CreateRoof(_spawnLayer);
+
+                    if (_enableExport)
+                    {
+                        StartCoroutine(ExecuteAfter());
+                        IEnumerator ExecuteAfter()
+                        {
+                            yield return new WaitForSeconds(0.05f);
+                            _actions.ExportAsPrefab(exportPackage, _exportPath, _exportPrefabName);
+                        }
+                    }
+
+                    Destroy(exportPackage,0.1f);
+                }
+
+                if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
                 {
                     _actions.ExportAsPrefab(_spawnLayer, _exportPath, _exportPrefabName);
                 }
             }
+            #endregion
+
             AddReward(collidedCount * 2);
             Continue();
         }
@@ -312,7 +333,7 @@ public class Train : Agent
         int spawnNum = _nearNum * 2;
         for (int i = 0; i < spawnNum; i++)
         {
-            _spawnList.Add(_utilities.SearchChild(_agents[0], "pt2"));
+            _spawnList.Add(Utilities.SearchChild(_agents[0], "pt2"));
         }
     }
 
@@ -323,7 +344,7 @@ public class Train : Agent
     private void OnDrawGizmos()
     {
         if (!_isStarted) return;
-        GameObject agentCheckPt = _utilities.SearchChild(_currentAgent, _checkPtnName);
+        GameObject agentCheckPt = Utilities.SearchChild(_currentAgent, _checkPtnName);
         DrawSphere(Color.red, agentCheckPt.transform.position, _checkPtRadius);
 
         foreach (GameObject joint in _roofJoints)
