@@ -7,10 +7,14 @@ using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Unity.VisualScripting.Dependencies.Sqlite;
+using UnityEditor;
 using UnityEngine;
 
 public class Train : Agent
 {
+    // bug: some geometry does not generate roof. Suspect ceiling projection issue. Suggest turn on projection layer to debug.
+
+
     #region Inputs Parameters
 
     [Header("Agent parameter")]
