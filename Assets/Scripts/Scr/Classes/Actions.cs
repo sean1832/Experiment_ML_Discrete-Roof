@@ -40,15 +40,14 @@ public class Actions : MonoBehaviour
         // export roof mesh
         GameObject roofObj = Utilities.SearchChild(copiedObj, "roof");
         Mesh roofMesh = roofObj.GetComponent<MeshFilter>().mesh;
-
         string roofMeshPath = $"{path}/mesh/{customName}.asset";
         roofMeshPath = AssetDatabase.GenerateUniqueAssetPath(roofMeshPath);
-
+        // save mesh
         AssetDatabase.CreateAsset(roofMesh, roofMeshPath);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-
+        // save prefab
         PrefabUtility.SaveAsPrefabAssetAndConnect(copiedObj, prefabPath, InteractionMode.UserAction);
         Destroy(copiedObj);
     }
