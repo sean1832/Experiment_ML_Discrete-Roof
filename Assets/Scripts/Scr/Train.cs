@@ -19,6 +19,7 @@ public class Train : Agent
     [SerializeField] private bool _enableWallCollision = false;
     [SerializeField][Range(3,15)] private int _nearNum = 4;
     [SerializeField] private bool _evaluateAgentBalance = false;
+    [SerializeField] private bool _enableRoofGeneration = false;
 
 
     [Header("Observation parameters")]
@@ -197,6 +198,12 @@ public class Train : Agent
                 AddReward(+50);
                 SetMaterial(_ground, Color.green);
 
+                if (_enableRoofGeneration)
+                {
+                    
+
+
+                }
                 if (_evaluateAgentBalance)
                 {
                     float multiplier = 20f;
@@ -204,7 +211,6 @@ public class Train : Agent
 
                     AddReward(-score);
                 }
-
                 if (_enableExport) // export geometry as prefab
                 {
                     _actions.ExportAsPrefab(_spawnLayer, _exportPath, _exportPrefabName);
