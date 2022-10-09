@@ -56,10 +56,10 @@ public class ProMeshUtilities : MonoBehaviour
         return hitVertices;
     }
 
-    public static List<Vector3> GetProjectedVertices(GameObject resultMesh, string projectionPlane, float overhangDistance, string spawnLayerName, string checkPtName)
+    public static List<Vector3> GetProjectedVertices(GameObject resultMesh, string projectionPlane, float overhangDistance, string checkPtName)
     {
         // set local fields
-        List<GameObject> resultChildren = Utilities.GetChildren(resultMesh, filterName: spawnLayerName);
+        List<GameObject> resultChildren = Utilities.GetChildren(resultMesh);
         List<GameObject> joints = Utilities.GetJoints(resultChildren, checkPtName);
 
         float projectDistance;
