@@ -10,30 +10,36 @@ public class TestMeshGen : MonoBehaviour
 {
     [SerializeField] private GameObject _resultMesh;
 
+    private ProRoof _proRoof;
+
     // Start is called before the first frame update
     void Start()
     {
-        string projectionPlane = "x";
-        float OverhangeDistance = 3f;
+        _proRoof = gameObject.AddComponent<ProRoof>();
 
-        (GameObject roofPointLayer,GameObject targetRoofObj, GameObject exportPackage) = ProRoof.CreateContainerObj();
-        GameObject ceiling = ProRoof.CreateCeiling(_resultMesh);
+        _proRoof.CreateRoof(_resultMesh);
 
-        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, projectionPlane, OverhangeDistance, "checkPoint");
-        ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer);
+        //string projectionPlane = "x";
+        //float OverhangeDistance = 3f;
 
-        StartCoroutine(WaitBeforeRayCast(0.05f));
+        //(GameObject roofPointLayer,GameObject targetRoofObj, GameObject exportPackage) = ProRoof.CreateContainerObj();
+        //GameObject ceiling = ProRoof.CreateCeiling(_resultMesh);
 
-        IEnumerator WaitBeforeRayCast(float waitSecond)
-        {
-            yield return new WaitForSeconds(waitSecond);
-            List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
-            ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
+        //List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, projectionPlane, OverhangeDistance, "checkPoint");
+        //ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer);
 
-            GameObject roof = ProRoof.ConstructRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
-            Utilities.SetParent(roof, exportPackage);
-            Utilities.SetParent(_resultMesh, exportPackage);
-        }
+        //StartCoroutine(WaitBeforeRayCast(0.05f));
+
+        //IEnumerator WaitBeforeRayCast(float waitSecond)
+        //{
+        //    yield return new WaitForSeconds(waitSecond);
+        //    List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
+        //    ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
+
+        //    GameObject roof = ProRoof.ConstructRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
+        //    Utilities.SetParent(roof, exportPackage);
+        //    Utilities.SetParent(_resultMesh, exportPackage);
+        //}
     }
     
 

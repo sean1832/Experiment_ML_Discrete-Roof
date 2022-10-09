@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
@@ -6,11 +7,40 @@ using UnityEngine;
 
 public class ProRoof : MonoBehaviour
 {
+    public GameObject CreateRoof(GameObject resultedStructure)
+    {
+        string projectionPlane = "x";
+        float OverhangeDistance = 3f;
+
+        (GameObject roofPointLayer, GameObject targetRoofObj, GameObject exportPackage) = ProRoof.CreateContainerObj();
+        GameObject ceiling = ProRoof.CreateCeiling(resultedStructure);
+
+        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(resultedStructure, projectionPlane, OverhangeDistance, "checkPoint");
+        ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer);
+
+        StartCoroutine(WaitBeforeRayCast(0.05f));
+
+        IEnumerator WaitBeforeRayCast(float waitSecond)
+        {
+            yield return new WaitForSeconds(waitSecond);
+            List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
+            ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
+
+            GameObject roof = ProRoof.ConstructRoof(hitVertices, resultedStructure, projectionPlane, OverhangeDistance, targetRoofObj);
+            Utilities.SetParent(roof, exportPackage);
+            Utilities.SetParent(resultedStructure, exportPackage);
+        }
+
+        return exportPackage;
+    }
 
 
 
 
-    public static GameObject ConstructRoof(List<Vector3> hitVertices, GameObject resultMesh, string projectionPlane, float overHangDistance, GameObject roofParent)
+
+
+
+    private static GameObject ConstructRoof(List<Vector3> hitVertices, GameObject resultMesh, string projectionPlane, float overHangDistance, GameObject roofParent)
     {
         Vector3 direction;
         float boundsValMax = 0;
@@ -59,7 +89,7 @@ public class ProRoof : MonoBehaviour
         return roof;
     }
 
-    public static GameObject CreateCeiling(GameObject resultMesh)
+    private static GameObject CreateCeiling(GameObject resultMesh)
     {
         List<GameObject> joints = GetJoints(resultMesh);
 
@@ -82,7 +112,7 @@ public class ProRoof : MonoBehaviour
         return ceiling;
     }
  
-    public static (GameObject roofPointLayer, GameObject roof, GameObject exportPackage) CreateContainerObj()
+    private static (GameObject roofPointLayer, GameObject roof, GameObject exportPackage) CreateContainerObj()
     {
         // generate roofPoints
         GameObject roofPointLayer = new GameObject("roofPoints");
@@ -96,7 +126,7 @@ public class ProRoof : MonoBehaviour
         return (roofPointLayer, roof, exportPackage);
     }
 
-    public static void DestroyContainerObj(GameObject item1, GameObject item2)
+    private static void DestroyContainerObj(GameObject item1, GameObject item2)
     {
         Destroy(item1);
         Destroy(item2);
