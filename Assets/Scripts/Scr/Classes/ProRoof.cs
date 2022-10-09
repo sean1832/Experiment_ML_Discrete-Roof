@@ -80,18 +80,20 @@ public class ProRoof : MonoBehaviour
  
     public static (GameObject roofPointLayer, GameObject roof) CreateContainerObj()
     {
-        
         // generate roofPoints
         GameObject roofPointLayer = new GameObject("roofPoints");
 
         // create roof layer
         GameObject roof = new GameObject("roof");
 
-
         return (roofPointLayer, roof);
     }
 
-
+    public static void DestroyContainerObj(GameObject item1, GameObject item2)
+    {
+        Destroy(item1);
+        Destroy(item2);
+    }
 
     private static List<GameObject> GetJoints(GameObject resultMesh)
     {

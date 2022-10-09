@@ -1,36 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
+//using System.Linq;
+//using Unity.VisualScripting;
+//using UnityEditor;
+
 
 public class TestMeshGen : MonoBehaviour
 {
     [SerializeField] private GameObject _resultMesh;
+
+    [SerializeField] private GameObject _spawnTest;
     // Start is called before the first frame update
     void Start()
     {
         string projectionPlane = "x";
         float OverhangeDistance = 3f;
 
-        (GameObject roofPointLayer,GameObject roofParent) = ProRoof.CreateContainerObj();
+        (GameObject roofPointLayer,GameObject targetRoofObj) = ProRoof.CreateContainerObj();
         GameObject ceiling = ProRoof.CreateCeiling(_resultMesh);
 
-
-        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, projectionPlane, OverhangeDistance, "Spawn", "checkPoint");
-        ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer); 
-        
+        List<Vector3> projectedVertices = ProMeshUtilities.GetProjectedVertices(_resultMesh, projectionPlane, OverhangeDistance, "checkPoint");
+        ProMeshUtilities.GenerateColliderAtVertices(projectedVertices, roofPointLayer);
 
         StartCoroutine(WaitBeforeRayCast(0.05f));
 
         IEnumerator WaitBeforeRayCast(float waitSecond)
         {
             yield return new WaitForSeconds(waitSecond);
-
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
-
-            GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, roofParent);
+            GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
+            ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
         }
     }
     
