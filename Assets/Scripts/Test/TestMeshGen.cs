@@ -32,7 +32,7 @@ public class TestMeshGen : MonoBehaviour
 
             GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
             Utilities.SetParent(roof, exportPackage);
-            Utilities.SetParent(gameObject, exportPackage);
+            Utilities.SetParent(_resultMesh, exportPackage);
         }
     }
     
