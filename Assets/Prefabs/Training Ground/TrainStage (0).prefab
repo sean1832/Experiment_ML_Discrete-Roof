@@ -407,6 +407,10 @@ MonoBehaviour:
   MaxStep: 0
   _checkPtRadius: 0.2
   _radiusMultiplier: 2
+  _enableWallCollision: 0
+  _nearNum: 4
+  _evaluateAgentBalance: 0
+  _enableRoofGeneration: 0
   _roofJointsRoot: {fileID: 7709550202774147319}
   _agentLayerMask:
     serializedVersion: 2
@@ -643,7 +647,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6522560631763345220
 Transform:
   m_ObjectHideFlags: 0
