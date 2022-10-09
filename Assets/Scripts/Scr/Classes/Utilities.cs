@@ -234,4 +234,17 @@ public class Utilities : MonoBehaviour
                 throw new ArgumentException($"MinOrMax value: ({maxOrMin}) not accepted, please enter either min or max");
         }
     }
+
+    public static void SetParent(List<GameObject> children, GameObject parent)
+    {
+        foreach (var child in children)
+        {
+            child.transform.SetParent(parent.transform);
+        }
+    }
+
+    public static void SetParent(GameObject child, GameObject parent)
+    {
+        child.transform.SetParent(parent.transform);
+    }
 }

@@ -30,6 +30,11 @@ public class TestMeshGen : MonoBehaviour
             yield return new WaitForSeconds(waitSecond);
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
             GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
+            // insert roof into spawnLayer
+            Utilities.SetParent(roof, _spawnTest);
+            // insert structure into spawnLayer
+            Utilities.SetParent(gameObject, _spawnTest);
+
             ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
         }
     }
