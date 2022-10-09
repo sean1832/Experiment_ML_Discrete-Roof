@@ -50,7 +50,6 @@ public class Train : Agent
 
     // observation
     private List<GameObject> _roofJoints = new List<GameObject>();
-
     private bool _isWallCollided = false;
 
     // ml Param
@@ -60,6 +59,11 @@ public class Train : Agent
     private Actions _actions;
     private Utilities _utilities;
     private Decision _decision;
+    private ProRoof _proRoof;
+
+    // export
+    private GameObject _exportPackage;
+
 
     private bool _isStarted = false;
 
@@ -75,15 +79,11 @@ public class Train : Agent
 
     private void InitClass()
     {
-        // add class
-        gameObject.AddComponent<Actions>();
-        gameObject.AddComponent<Utilities>();
-        gameObject.AddComponent<Decision>();
-
-        // assign class
-        _actions = gameObject.GetComponent<Actions>();
-        _utilities = gameObject.GetComponent<Utilities>();
-        _decision = gameObject.GetComponent<Decision>();
+        // add and assign class
+        _actions = gameObject.AddComponent<Actions>();
+        _utilities = gameObject.AddComponent<Utilities>();
+        _decision = gameObject.AddComponent<Decision>();
+        _proRoof = gameObject.AddComponent<ProRoof>();
 
         // init class
         _actions.Init();
@@ -192,18 +192,12 @@ public class Train : Agent
         }
         else if (isRoofCollided) // successfully connect and reach goal
         {
+            #region Finish
             if (_idx == _agents.Count - 1) // connected all and finish
             {
                 print("success");
                 AddReward(+50);
                 SetMaterial(_ground, Color.green);
-
-                if (_enableRoofGeneration)
-                {
-                    
-
-
-                }
                 if (_evaluateAgentBalance)
                 {
                     float multiplier = 20f;
@@ -211,11 +205,19 @@ public class Train : Agent
 
                     AddReward(-score);
                 }
+
+                if (_enableRoofGeneration)
+                {
+                    _exportPackage = _proRoof.CreateRoof(_spawnLayer);
+                }
+
                 if (_enableExport) // export geometry as prefab
                 {
                     _actions.ExportAsPrefab(_spawnLayer, _exportPath, _exportPrefabName);
                 }
             }
+            #endregion
+
             AddReward(collidedCount * 2);
             Continue();
         }

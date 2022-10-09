@@ -9,6 +9,7 @@ public class ProRoof : MonoBehaviour
 {
     public GameObject CreateRoof(GameObject resultedStructure)
     {
+        
         string projectionPlane = "x";
         float overhangDistance = 3f;
 
@@ -23,6 +24,7 @@ public class ProRoof : MonoBehaviour
         IEnumerator WaitBeforeRayCast(float waitSecond)
         {
             yield return new WaitForSeconds(waitSecond);
+            print("Start");
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
             ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
 
