@@ -30,7 +30,7 @@ public class TestMeshGen : MonoBehaviour
             List<Vector3> hitVertices = ProMeshUtilities.GetRaycastCeilingVert(projectedVertices, ceiling);
             ProRoof.DestroyContainerObj(ceiling, roofPointLayer);
 
-            GameObject roof = ProRoof.CreateRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
+            GameObject roof = ProRoof.ConstructRoof(hitVertices, _resultMesh, projectionPlane, OverhangeDistance, targetRoofObj);
             Utilities.SetParent(roof, exportPackage);
             Utilities.SetParent(_resultMesh, exportPackage);
         }

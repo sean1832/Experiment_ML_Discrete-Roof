@@ -6,7 +6,11 @@ using UnityEngine;
 
 public class ProRoof : MonoBehaviour
 {
-    public static GameObject CreateRoof(List<Vector3> hitVertices, GameObject resultMesh, string projectionPlane, float overHangDistance, GameObject roofParent)
+
+
+
+
+    public static GameObject ConstructRoof(List<Vector3> hitVertices, GameObject resultMesh, string projectionPlane, float overHangDistance, GameObject roofParent)
     {
         Vector3 direction;
         float boundsValMax = 0;
