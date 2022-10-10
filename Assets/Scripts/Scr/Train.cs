@@ -61,7 +61,7 @@ public class Train : Agent
     private int _idx;
 
     // classes
-    private Actions _actions;
+    private AgentActions _agentActions;
     private Utilities _utilities;
     private Decision _decision;
     private ProRoof _proRoof;
@@ -82,13 +82,13 @@ public class Train : Agent
     private void InitClass()
     {
         // add and assign class
-        _actions = gameObject.AddComponent<Actions>();
+        _agentActions = gameObject.AddComponent<AgentActions>();
         _utilities = gameObject.AddComponent<Utilities>();
         _decision = gameObject.AddComponent<Decision>();
         _proRoof = gameObject.AddComponent<ProRoof>();
 
         // init class
-        _actions.Init();
+        _agentActions.Init();
     }
 
     private void InitFields()
@@ -168,15 +168,15 @@ public class Train : Agent
         #region Actions
 
         // turn off current agent collision (prevent self collision detection)
-        _actions.EnableAgentCollider(_currentAgent, false);
+        _agentActions.EnableAgentCollider(_currentAgent, false);
 
         GameObject checkPt = Utilities.SearchChild(_currentAgent, _checkPtnName);
 
         GameObject spawnPt = _decision.ChoseSpawnPt(spawnChoice, _spawnList);
-        _actions.Spawn(_currentAgent, spawnPt);
+        _agentActions.Spawn(_currentAgent, spawnPt);
 
         Vector3 rotation = _decision.ChoseRotation(rotationChoice);
-        _actions.Rotate(_currentAgent, rotation);
+        _agentActions.Rotate(_currentAgent, rotation);
 
         #endregion
 
@@ -221,7 +221,7 @@ public class Train : Agent
                         IEnumerator ExecuteAfter()
                         {
                             yield return new WaitForSeconds(0.05f);
-                            _actions.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+                            Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
                         }
                     }
 
@@ -230,7 +230,7 @@ public class Train : Agent
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
                 {
-                    _actions.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+                    Export.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
                 }
             }
             
@@ -296,7 +296,7 @@ public class Train : Agent
         // set agent parent to spawn layer
         _currentAgent.transform.parent = _spawnLayer.transform;
         // turn collision back on
-        _actions.EnableAgentCollider(_currentAgent, true);
+        _agentActions.EnableAgentCollider(_currentAgent, true);
         _idx++;
         EndEpisode();
     }
