@@ -39,7 +39,7 @@ public class Actions : MonoBehaviour
         else
         {
             path = $"{path}/Progress";
-            customName = $"{customName}_epis({episode})";
+            customName = $"{customName}_eps({episode})";
         }
 
         GameObject copiedObj = Instantiate(rootObj);
