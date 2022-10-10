@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class Utilities : MonoBehaviour
 {
+    #region GetSpawnList
     public List<GameObject> GetSpawnList(GameObject agent, List<GameObject> agentList, string checkPtName, int nearNum)
     {
         List<GameObject> nearestAgents = GetNearAgents(agent, agentList, nearNum);
@@ -25,7 +26,9 @@ public class Utilities : MonoBehaviour
         //List<GameObject> spawnPts = Utilities.FlattenList(spawnPtList);
 
     }
+    #endregion
 
+    #region GetJoints
     public static List<GameObject> GetJoints(List<GameObject> agents, string checkPointName)
     {
         List<List<GameObject>> jointList = new List<List<GameObject>>();
@@ -38,17 +41,20 @@ public class Utilities : MonoBehaviour
 
         return Utilities.FlattenList(jointList);
     }
+    #endregion
 
+    #region GetSpawnedAgents
     public List<GameObject> GetSpawnedAgents(GameObject spawnLayer)
     {
         return GetChildren(spawnLayer);
     }
+    #endregion
 
+    #region CheckCollision & CheckCollisionCount
     public bool CheckCollision(GameObject checkPoint, float checkDistance, LayerMask layerMask)
     {
         return Physics.CheckSphere(checkPoint.transform.position, checkDistance, layerMask);
     }
-
     public (bool isCollided, int count) CheckCollisionCount(List<GameObject> checkList, float checkDistance, LayerMask layerMask)
     {
         int checkCount = 0;
@@ -63,6 +69,8 @@ public class Utilities : MonoBehaviour
         bool isCollided = checkCount != 0;
         return (isCollided, checkCount);
     }
+    #endregion
+
 
     public float EvalAgentBalance(List<GameObject> agents)
     {
@@ -247,5 +255,4 @@ public class Utilities : MonoBehaviour
     {
         child.transform.SetParent(parent.transform);
     }
-
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Mono.Cecil;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
@@ -35,7 +36,11 @@ public class Train : Agent
     [SerializeField] private GameObject _spawnLayer;
     [SerializeField] private Renderer _ground;
 
-    [Header("Output Parameters")]
+    [Header("Sample export parameters")]
+    [SerializeField] private bool _enableSampleExport = false;
+    [SerializeField] private int _exportEpisodeStep = 10000;
+
+    [Header("Export Parameters")]
     [SerializeField] private bool _enableExport = false;
     [SerializeField] private bool  _isFinalResults = false;
     [SerializeField] private string _exportDirectory = "Assets/Prefabs/Outputs";
@@ -59,6 +64,7 @@ public class Train : Agent
 
     // ml Param
     private int _idx;
+    private int _targetEpisodeCount;
 
     // classes
     private AgentActions _agentActions;
@@ -86,7 +92,7 @@ public class Train : Agent
         _utilities = gameObject.AddComponent<Utilities>();
         _decision = gameObject.AddComponent<Decision>();
         _proRoof = gameObject.AddComponent<ProRoof>();
-
+        
         // init class
         _agentActions.Init();
     }
@@ -104,6 +110,7 @@ public class Train : Agent
 
         CreateDummy();
         _idx = 1;
+        _targetEpisodeCount = _exportEpisodeStep;
     }
     #endregion
 
@@ -221,10 +228,14 @@ public class Train : Agent
                         {
                             yield return new WaitForSeconds(0.05f);
                             Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+                            ExportSamples(exportPackage);
                         }
                     }
-
                     Destroy(exportPackage,0.1f);
+                }
+                else
+                {
+                    ExportSamples(_spawnLayer);
                 }
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
@@ -240,14 +251,15 @@ public class Train : Agent
         else if (_idx == _agents.Count - 1) // successfully connect but never reached goal
         {
             AddReward(-20);
+            ExportSamples(_spawnLayer);
             Continue();
         }
         else // successfully connect but not reach goal yet
         {
             AddReward(+1);
+            ExportSamples(_spawnLayer);
             Continue();
         }
-        
         #endregion
 
     }
@@ -279,11 +291,21 @@ public class Train : Agent
         _isWallCollided = true;
         AddReward(-20);
         SetMaterial(_ground, Color.red);
+        ExportSamples(_spawnLayer);
         EndEpisode();
     }
     #endregion
 
     #region Local Functions
+
+    private void ExportSamples(GameObject sample)
+    {
+        if (!_enableSampleExport) return;
+        if (CompletedEpisodes < _targetEpisodeCount) return;
+        print("exported");
+        Export.ExportAsPrefab(sample, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+        _targetEpisodeCount += _exportEpisodeStep;
+    }
 
     private void SetMaterial(Renderer renderer, Color color)
     {
