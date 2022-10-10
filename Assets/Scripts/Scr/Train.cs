@@ -13,8 +13,6 @@ using UnityEngine;
 
 public class Train : Agent
 {
-    // bug: some geometry does not generate roof. Suspect ceiling projection issue. Suggest turn on projection layer to debug.
-
 
     #region Inputs Parameters
 
