@@ -190,9 +190,10 @@ public class Utilities : MonoBehaviour
 
     public static List<Vector3> CullDuplicate(List<Vector3> vertices, float tolerance = 0.001f, int maxIterationCount = 10000)
     {
+        // absolute culling
         List<Vector3> distinctList = vertices.Distinct().ToList();
 
-        // tolerance 
+        // tolerance culling
         int count = 0;
         for (int i = 0; i < distinctList.Count; i++)
         {
