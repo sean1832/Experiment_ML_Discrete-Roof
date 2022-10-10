@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class TestMeshGen : MonoBehaviour
 {
-    [SerializeField] private GameObject _resultMesh;
+    //[SerializeField] private GameObject _resultMesh;
 
     private ProRoof _proRoof;
 
@@ -22,7 +22,23 @@ public class TestMeshGen : MonoBehaviour
     {
         _isStarted = true;
         _proRoof = gameObject.AddComponent<ProRoof>();
-        _proRoof.CreateRoof(_resultMesh);
+        
+
+        
+
+        GameObject package = _proRoof.CreateRoof(gameObject);
+        Destroy(package);
+        //StartCoroutine(ExecuteAfter());
+
+        //IEnumerator ExecuteAfter()
+        //{
+        //    yield return new WaitForSeconds(0.05f);
+        //    GameObject roof = Utilities.SearchChild(package, "roof");
+        //    Mesh roofMesh = ProMeshUtilities.GetMesh(roof);
+        //    print(roofMesh.name);
+            
+        //}
+        
     }
 
 

@@ -116,15 +116,17 @@ public class ProMeshUtilities : MonoBehaviour
 
     public static Mesh GetMesh(GameObject obj)
     {
-        if (obj.TryGetComponent(out MeshFilter filter))
-        {
-            return filter.mesh;
-        }
-        else
-        {
-            throw new ArgumentException(
-                $"input gameObject: {obj.name} does not have a meshFilter, please apply one before proceed");
-        }
+        Mesh mesh = obj.GetComponent<MeshFilter>().mesh;
+        return mesh;
+        //if (obj.TryGetComponent(out MeshFilter filter))
+        //{
+        //    return filter.mesh;
+        //}
+        //else
+        //{
+        //    throw new ArgumentException(
+        //        $"input gameObject: {obj.name} does not have a meshFilter, please apply one before proceed");
+        //}
     }
 
     #endregion

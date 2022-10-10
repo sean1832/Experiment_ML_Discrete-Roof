@@ -218,22 +218,25 @@ public class Train : Agent
                 if (_enableRoofGeneration)
                 {
                     GameObject exportPackage = _proRoof.CreateRoof(_spawnLayer);
-
-                    GameObject roof = Utilities.SearchChild(exportPackage, "roof");
-                    float score = Evaluation.SurfaceArea(roof, 0.02f);
-
-                    AddReward(score);
-
-                    if (_enableExport)
+                    StartCoroutine(ExecuteAfter());
+                    IEnumerator ExecuteAfter()
                     {
-                        StartCoroutine(ExecuteAfter());
-                        IEnumerator ExecuteAfter()
+                        yield return new WaitForSeconds(0.05f);
+                        // other script execute after
+                        GameObject roof = Utilities.SearchChild(exportPackage, "roof");
+                        float score = Evaluation.SurfaceArea(roof, 0.02f);
+
+                        AddReward(score);
+
+                        // export
+                        if (_enableExport)
                         {
-                            yield return new WaitForSeconds(0.05f);
                             Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
                         }
+
+                        // delete
+                        Destroy(exportPackage);
                     }
-                    Destroy(exportPackage,0.1f);
                 }
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
