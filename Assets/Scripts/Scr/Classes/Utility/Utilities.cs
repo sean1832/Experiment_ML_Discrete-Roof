@@ -193,7 +193,7 @@ public class Utilities : MonoBehaviour
         // absolute culling
         List<Vector3> distinctList = vertices.Distinct().ToList();
 
-        // tolerance culling
+        //tolerance culling
         int count = 0;
         for (int i = 0; i < distinctList.Count; i++)
         {
@@ -203,7 +203,7 @@ public class Utilities : MonoBehaviour
                 if (count > maxIterationCount) Debug.LogError("vertices too much!");
 
                 float distance = Utilities.GetDistance(distinctList[i], distinctList[j]);
-                if (distance<tolerance)
+                if (distance < tolerance)
                 {
                     distinctList.RemoveAt(j);
                 }
