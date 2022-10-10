@@ -500,6 +500,14 @@ PrefabInstance:
       value: 4.92
       objectReference: {fileID: 0}
     - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
+      propertyPath: _exportEpisodeStep
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
+      propertyPath: _enableSampleExport
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: _enableWallCollision
       value: 1
       objectReference: {fileID: 0}

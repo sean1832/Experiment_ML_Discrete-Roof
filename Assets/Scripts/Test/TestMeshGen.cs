@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 //using System.Linq;
 //using Unity.VisualScripting;
@@ -12,21 +13,18 @@ public class TestMeshGen : MonoBehaviour
 
     private ProRoof _proRoof;
 
+    private bool _isStarted = false;
+
+    private List<Vector3> _hitVertices;
+
     // Start is called before the first frame update
     void Start()
     {
-        //_proRoof = gameObject.AddComponent<ProRoof>();
-        //var exportPackage = _proRoof.CreateRoof(_resultMesh, true);
-
-        GameObject roof = Utilities.SearchChild(_resultMesh, "roof");
-
-        Mesh mesh = ProMeshUtilities.GetMesh(roof);
-
-        float area = ProMeshAnalyse.CalcSurfaceArea(mesh);
-
-        print(area);
+        _isStarted = true;
+        _proRoof = gameObject.AddComponent<ProRoof>();
+        _proRoof.CreateRoof(_resultMesh);
     }
-    
+
 
 
     //private void OnDrawGizmos()
@@ -40,7 +38,8 @@ public class TestMeshGen : MonoBehaviour
     //    }
 
     //    Gizmos.color = Color.blue;
-    //    Gizmos.DrawSphere(_hitVertices[2], 0.2f);
+    //    Gizmos.DrawSphere(_hitVertices[1], 0.2f);
+    //    Gizmos.DrawSphere(_hitVertices[0], 0.2f);
     //}
 
 }

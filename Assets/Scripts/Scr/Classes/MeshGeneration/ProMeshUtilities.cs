@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,7 +46,7 @@ public class ProMeshUtilities : MonoBehaviour
         {
             var hitInfo = new RaycastHit();
             Ray ray = new Ray(vertex, Vector3.up);
-            if (!Physics.Raycast(ray, out hitInfo, 20f)) continue;
+            if (!Physics.Raycast(ray, out hitInfo, Mathf.Infinity)) continue;
             if (hitInfo.collider.gameObject == ceiling)
             {
                 hitVertices.Add(vertex);

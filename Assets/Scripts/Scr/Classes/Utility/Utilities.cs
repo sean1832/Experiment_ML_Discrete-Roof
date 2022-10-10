@@ -188,10 +188,28 @@ public class Utilities : MonoBehaviour
         return positions;
     }
 
-    public static List<Vector3> CullDuplicate(List<Vector3> vertices)
+    public static List<Vector3> CullDuplicate(List<Vector3> vertices, float tolerance = 0.001f, int maxIterationCount = 10000)
     {
-        List<Vector3> noDup = vertices.Distinct().ToList();
-        return noDup;
+        List<Vector3> distinctList = vertices.Distinct().ToList();
+
+        // tolerance 
+        int count = 0;
+        for (int i = 0; i < distinctList.Count; i++)
+        {
+            for (int j = i + 1; j < distinctList.Count; j++)
+            {
+                count++;
+                if (count > maxIterationCount) Debug.LogError("vertices too much!");
+
+                float distance = Utilities.GetDistance(distinctList[i], distinctList[j]);
+                if (distance<tolerance)
+                {
+                    distinctList.RemoveAt(j);
+                }
+            }
+        }
+
+        return distinctList;
     }
 
     public static (float x, float y, float z, Vector3 center) GetBounds(List<GameObject> objects, string maxOrMin)
@@ -254,5 +272,10 @@ public class Utilities : MonoBehaviour
     public static void SetParent(GameObject child, GameObject parent)
     {
         child.transform.SetParent(parent.transform);
+    }
+
+    public static float GetDistance(Vector3 ptA, Vector3 ptB)
+    {
+        return (ptA - ptB).magnitude;
     }
 }
