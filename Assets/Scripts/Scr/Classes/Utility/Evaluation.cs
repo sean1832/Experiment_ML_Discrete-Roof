@@ -36,7 +36,7 @@ public class Evaluation : MonoBehaviour
     {
         Mesh mesh = ProMeshUtilities.GetMesh(obj);
         float area = ProMeshAnalyse.CalcSurfaceArea(mesh);
-        float score;
+        float score = area * multiplier;
 
         return score;
     }
