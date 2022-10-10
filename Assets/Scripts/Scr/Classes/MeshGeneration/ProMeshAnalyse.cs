@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProMeshAnalyse : MonoBehaviour
 {
-    public static float GetMeshSurfaceArea(Mesh mesh)
+    public static float CalcSurfaceArea(Mesh mesh)
     {
         var triangles = mesh.triangles;
         var vertices = mesh.vertices;

@@ -212,7 +212,7 @@ public class Train : Agent
                 if (_evaluateAgentBalance)
                 {
                     float multiplier = -20f;
-                    float score = _utilities.EvalAgentBalance(_agents) * multiplier;
+                    float score = Evaluation.AgentBalance(_agents) * multiplier;
 
                     AddReward(score);
                 }
@@ -220,6 +220,11 @@ public class Train : Agent
                 if (_enableRoofGeneration)
                 {
                     GameObject exportPackage = _proRoof.CreateRoof(_spawnLayer);
+
+                    GameObject roof = Utilities.SearchChild(exportPackage, "roof");
+                    float score = Evaluation.SurfaceArea(roof, 0.02f);
+
+                    AddReward(score);
 
                     if (_enableExport)
                     {

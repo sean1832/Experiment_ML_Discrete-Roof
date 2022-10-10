@@ -22,7 +22,7 @@ public class TestMeshGen : MonoBehaviour
 
         Mesh mesh = ProMeshUtilities.GetMesh(roof);
 
-        float area = ProMeshAnalyse.GetMeshSurfaceArea(mesh);
+        float area = ProMeshAnalyse.CalcSurfaceArea(mesh);
 
         print(area);
     }
