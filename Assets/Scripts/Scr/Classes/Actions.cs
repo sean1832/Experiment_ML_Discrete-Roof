@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -30,17 +29,22 @@ public class Actions : MonoBehaviour
         agent.GetComponent<BoxCollider>().enabled = state;
     }
 
-    public void ExportAsPrefab(GameObject rootObj, string path, string customName)
+    public void ExportAsPrefab(GameObject rootObj, string path, string customName, bool isResults)
     {
+        path = isResults ? $"{path}/Results" : $"{path}/Progress";
+
         GameObject copiedObj = Instantiate(rootObj);
+        Directory.CreateDirectory(path); // create path if not exist
         if (customName == string.Empty) customName = rootObj.name;
-        string prefabPath = path + customName + ".prefab";
+        string prefabPath = $"{path}/{customName}.prefab";
         prefabPath = AssetDatabase.GenerateUniqueAssetPath(prefabPath);
 
         // export roof mesh
         GameObject roofObj = Utilities.SearchChild(copiedObj, "roof");
         Mesh roofMesh = roofObj.GetComponent<MeshFilter>().mesh;
-        string roofMeshPath = $"{path}/mesh/{customName}.asset";
+        string meshPath = $"{path}/mesh";
+        Directory.CreateDirectory(meshPath); // create path if not exist
+        string roofMeshPath = $"{meshPath}/{customName}.asset";
         roofMeshPath = AssetDatabase.GenerateUniqueAssetPath(roofMeshPath);
         // save mesh
         AssetDatabase.CreateAsset(roofMesh, roofMeshPath);
