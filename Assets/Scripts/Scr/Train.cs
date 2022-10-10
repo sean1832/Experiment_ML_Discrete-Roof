@@ -197,11 +197,12 @@ public class Train : Agent
         }
         else if (isRoofCollided) // successfully connect and reach goal
         {
-            #region Finish
+            #region Finish Actions
             if (_idx == _agents.Count - 1) // connected all and finish
             {
                 print("success");
                 AddReward(+50);
+                AddReward(collidedCount * 2);
                 SetMaterial(_ground, Color.green);
                 if (_evaluateAgentBalance)
                 {
@@ -213,7 +214,7 @@ public class Train : Agent
 
                 if (_enableRoofGeneration)
                 {
-                    var exportPackage = _proRoof.CreateRoof(_spawnLayer);
+                    GameObject exportPackage = _proRoof.CreateRoof(_spawnLayer);
 
                     if (_enableExport)
                     {
@@ -233,10 +234,9 @@ public class Train : Agent
                     _actions.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, _episode);
                 }
             }
-            #endregion
-
-            AddReward(collidedCount * 2);
             Continue();
+
+            #endregion
         }
         else if (_idx == _agents.Count - 1) // successfully connect but never reached goal
         {
