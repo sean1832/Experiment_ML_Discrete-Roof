@@ -29,9 +29,17 @@ public class Actions : MonoBehaviour
         agent.GetComponent<BoxCollider>().enabled = state;
     }
 
-    public void ExportAsPrefab(GameObject rootObj, string path, string customName, bool isResults)
+    public void ExportAsPrefab(GameObject rootObj, string path, string customName, bool isResults, int episode)
     {
-        path = isResults ? $"{path}/Results" : $"{path}/Progress";
+        if (isResults)
+        {
+            path = $"{path}/Results";
+        }
+        else
+        {
+            path = $"{path}/Progress";
+            customName = $"{customName}_epis({episode})";
+        }
 
         GameObject copiedObj = Instantiate(rootObj);
         Directory.CreateDirectory(path); // create path if not exist

@@ -37,7 +37,8 @@ public class Train : Agent
 
     [Header("Output Parameters")]
     [SerializeField] private bool _enableExport = false;
-    [SerializeField] private string _exportPath = "Assets/Prefabs/Results/";
+    [SerializeField] private bool  _isFinalResults = false;
+    [SerializeField] private string _exportDirectory = "Assets/Prefabs/Outputs";
     [SerializeField] private string _exportPrefabName = "result";
 
     #endregion
@@ -58,6 +59,7 @@ public class Train : Agent
 
     // ml Param
     private int _idx;
+    private int _episode;
 
     // classes
     private Actions _actions;
@@ -103,6 +105,7 @@ public class Train : Agent
 
         CreateDummy();
         _idx = 1;
+        _episode = 0;
     }
     #endregion
 
@@ -117,6 +120,7 @@ public class Train : Agent
 
     public override void OnEpisodeBegin()
     {
+        _episode++;
         if (_idx < _agents.Count && _idx != 1 && !_isWallCollided)
         {
             ResetCurrentAgent();
@@ -217,7 +221,7 @@ public class Train : Agent
                         IEnumerator ExecuteAfter()
                         {
                             yield return new WaitForSeconds(0.05f);
-                            _actions.ExportAsPrefab(exportPackage, _exportPath, _exportPrefabName);
+                            _actions.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, _episode);
                         }
                     }
 
@@ -226,7 +230,7 @@ public class Train : Agent
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
                 {
-                    _actions.ExportAsPrefab(_spawnLayer, _exportPath, _exportPrefabName);
+                    _actions.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, _episode);
                 }
             }
             #endregion
