@@ -118,7 +118,6 @@ public class Train : Agent
 
     public override void OnEpisodeBegin()
     {
-        print(CompletedEpisodes);
         if (_idx < _agents.Count && _idx != 1 && !_isWallCollided)
         {
             ResetCurrentAgent();
