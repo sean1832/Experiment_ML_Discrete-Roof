@@ -31,6 +31,7 @@ public class Actions : MonoBehaviour
 
     public void ExportAsPrefab(GameObject rootObj, string path, string customName, bool isResults, int episode)
     {
+        if (customName == string.Empty) customName = rootObj.name;
         if (isResults)
         {
             path = $"{path}/Results";
@@ -43,7 +44,6 @@ public class Actions : MonoBehaviour
 
         GameObject copiedObj = Instantiate(rootObj);
         Directory.CreateDirectory(path); // create path if not exist
-        if (customName == string.Empty) customName = rootObj.name;
         string prefabPath = $"{path}/{customName}.prefab";
         prefabPath = AssetDatabase.GenerateUniqueAssetPath(prefabPath);
 

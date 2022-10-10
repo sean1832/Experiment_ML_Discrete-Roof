@@ -59,7 +59,6 @@ public class Train : Agent
 
     // ml Param
     private int _idx;
-    private int _episode;
 
     // classes
     private Actions _actions;
@@ -105,7 +104,6 @@ public class Train : Agent
 
         CreateDummy();
         _idx = 1;
-        _episode = 0;
     }
     #endregion
 
@@ -120,7 +118,7 @@ public class Train : Agent
 
     public override void OnEpisodeBegin()
     {
-        _episode++;
+        print(CompletedEpisodes);
         if (_idx < _agents.Count && _idx != 1 && !_isWallCollided)
         {
             ResetCurrentAgent();
@@ -204,6 +202,7 @@ public class Train : Agent
                 AddReward(+50);
                 AddReward(collidedCount * 2);
                 SetMaterial(_ground, Color.green);
+
                 if (_evaluateAgentBalance)
                 {
                     float multiplier = 20f;
@@ -222,7 +221,7 @@ public class Train : Agent
                         IEnumerator ExecuteAfter()
                         {
                             yield return new WaitForSeconds(0.05f);
-                            _actions.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, _episode);
+                            _actions.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
                         }
                     }
 
@@ -231,9 +230,10 @@ public class Train : Agent
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
                 {
-                    _actions.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, _episode);
+                    _actions.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
                 }
             }
+            
             Continue();
 
             #endregion
@@ -248,7 +248,7 @@ public class Train : Agent
             AddReward(+1);
             Continue();
         }
-
+        
         #endregion
 
     }
