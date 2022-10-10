@@ -211,10 +211,10 @@ public class Train : Agent
 
                 if (_evaluateAgentBalance)
                 {
-                    float multiplier = 20f;
+                    float multiplier = -20f;
                     float score = _utilities.EvalAgentBalance(_agents) * multiplier;
 
-                    AddReward(-score);
+                    AddReward(score);
                 }
 
                 if (_enableRoofGeneration)
@@ -228,14 +228,9 @@ public class Train : Agent
                         {
                             yield return new WaitForSeconds(0.05f);
                             Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
-                            ExportSamples(exportPackage);
                         }
                     }
                     Destroy(exportPackage,0.1f);
-                }
-                else
-                {
-                    ExportSamples(_spawnLayer);
                 }
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
@@ -251,13 +246,11 @@ public class Train : Agent
         else if (_idx == _agents.Count - 1) // successfully connect but never reached goal
         {
             AddReward(-20);
-            ExportSamples(_spawnLayer);
             Continue();
         }
         else // successfully connect but not reach goal yet
         {
             AddReward(+1);
-            ExportSamples(_spawnLayer);
             Continue();
         }
         #endregion
@@ -291,7 +284,6 @@ public class Train : Agent
         _isWallCollided = true;
         AddReward(-20);
         SetMaterial(_ground, Color.red);
-        ExportSamples(_spawnLayer);
         EndEpisode();
     }
     #endregion
@@ -303,7 +295,7 @@ public class Train : Agent
         if (!_enableSampleExport) return;
         if (CompletedEpisodes < _targetEpisodeCount) return;
         print("exported");
-        Export.ExportAsPrefab(sample, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+        //Export.ExportAsPrefab(sample, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
         _targetEpisodeCount += _exportEpisodeStep;
     }
 

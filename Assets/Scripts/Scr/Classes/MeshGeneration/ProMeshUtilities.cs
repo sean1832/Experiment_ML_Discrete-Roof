@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ProMeshUtilities : MonoBehaviour
 {
-    #region highlevel functions
+    #region public functions
 
     // spawn gameObjects at vertices locations
     public static void GenerateColliderAtVertices(List<Vector3> vertices, GameObject parent = null)
@@ -112,6 +112,20 @@ public class ProMeshUtilities : MonoBehaviour
         targetObj.GetComponent<MeshFilter>().mesh.name = "Procedural Roof Mesh";
 
         return targetObj;
+    }
+
+
+    public static Mesh GetMesh(GameObject obj)
+    {
+        if (obj.TryGetComponent(out MeshFilter filter))
+        {
+            return filter.mesh;
+        }
+        else
+        {
+            throw new ArgumentException(
+                $"input gameObject: {obj.name} does not have a meshFilter, please apply one before proceed");
+        }
     }
 
     #endregion
