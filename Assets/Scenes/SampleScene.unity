@@ -489,7 +489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: _enableExport
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: _exportDirectory
@@ -515,10 +515,14 @@ PrefabInstance:
       propertyPath: _enableRoofGeneration
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
+      propertyPath: _evaluateAgentBalance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1300607177044323611, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: 6624b6974f910ee4ab02a45616c2bc50, type: 3}
+      objectReference: {fileID: 5022602860645237092, guid: d76134d18f3e6884da9f7e0dabeae4cb, type: 3}
     - target: {fileID: 1300607177044323611, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: m_BehaviorName
       value: ConnectRoof
