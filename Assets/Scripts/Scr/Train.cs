@@ -62,7 +62,7 @@ public class Train : Agent
 
     // ml Param
     private int _idx;
-    private int _targetEpisodeCount;
+    private int _redundantActionCount;
 
     // classes
     private AgentActions _agentActions;
@@ -108,6 +108,7 @@ public class Train : Agent
 
         CreateDummy();
         _idx = 1;
+        _redundantActionCount = 0;
     }
     #endregion
 
@@ -194,6 +195,8 @@ public class Train : Agent
         if (isAgentCollided) // failed to connect = Agent is collided
         {
             AddReward(-2);
+            _redundantActionCount++;
+            
             EndEpisode();
         }
         else if (isRoofCollided) // successfully connect and reach goal
@@ -230,17 +233,22 @@ public class Train : Agent
                         if (_enableExport)
                         {
                             string prefabPath = Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName).prefabPath;
-                            string prefabName = Path.GetFileName(prefabPath);
+                            string prefabName = Path.GetFileNameWithoutExtension(prefabPath);
+                            
 
                             string jsonData = ExportUtilities.GetJsonData(
                                 prefabName,
                                 GetCumulativeReward(),
                                 area,
                                 collidedCount,
+                                _redundantActionCount,
                                 ProRoof.GetMaxHeight(exportPackage)
                             );
                             Export.ExportMeta(jsonData, prefabName, _exportDirectory);
                         }
+                        print(_redundantActionCount);
+                        _redundantActionCount = 0;
+                        
 
                         // delete
                         Destroy(exportPackage);
@@ -260,11 +268,13 @@ public class Train : Agent
         else if (_idx == _agents.Count - 1) // successfully connect but never reached goal
         {
             AddReward(-20);
+            _redundantActionCount = 0;
             Continue();
         }
         else // successfully connect but not reach goal yet
         {
             AddReward(+1);
+            _redundantActionCount = 0;
             Continue();
         }
         #endregion
@@ -296,6 +306,7 @@ public class Train : Agent
     {
         if (!_enableWallCollision) return;
         _isWallCollided = true;
+        _redundantActionCount = 0;
         AddReward(-20);
         SetMaterial(_ground, Color.red);
         EndEpisode();

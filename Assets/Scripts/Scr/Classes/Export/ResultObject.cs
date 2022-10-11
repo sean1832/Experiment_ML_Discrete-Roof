@@ -4,5 +4,6 @@ public class ResultObject
     public float CumulativeReward;
     public float RoofArea;
     public int TargetReachCount;
+    public int RedundantAction;
     public float Height;
 }

@@ -34,9 +34,9 @@ public class Export : MonoBehaviour
         return (prefabPath, roofMeshPath);
     }
 
-    public static void ExportMeta(string data, string fileName, string directory)
+    public static void ExportMeta(string data, string fileName, string directory, bool subfolder = false)
     {
-        string dataDir = $"{directory}/metadata";
+        string dataDir = subfolder? $"{directory}/metadata": $"{directory}";
         Directory.CreateDirectory(dataDir);
         string dataPath = $"{dataDir}/{fileName}_meta.json";
         dataPath = AssetDatabase.GenerateUniqueAssetPath(dataPath);
