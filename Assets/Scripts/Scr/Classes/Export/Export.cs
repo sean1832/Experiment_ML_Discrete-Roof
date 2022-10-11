@@ -4,24 +4,17 @@ using UnityEngine;
 
 public class Export : MonoBehaviour
 {
-    public static void ExportAsPrefab(GameObject rootObj, string path, string customName, bool isResults, int episode)
+    public static (string prefabPath, string meshPath) ExportAsPrefab(GameObject rootObj, string path, string customName)
     {
         if (customName == string.Empty) customName = rootObj.name;
-        if (isResults)
-        {
-            path = $"{path}/Results";
-        }
-        else
-        {
-            path = $"{path}/Progress";
-            customName = $"{customName}_eps({episode})";
-        }
 
         GameObject copiedObj = Instantiate(rootObj);
         Directory.CreateDirectory(path); // create path if not exist
         string prefabPath = $"{path}/{customName}.prefab";
         prefabPath = AssetDatabase.GenerateUniqueAssetPath(prefabPath);
 
+        
+        
         // export roof mesh
         GameObject roofObj = Utilities.SearchChild(copiedObj, "roof");
         Mesh roofMesh = roofObj.GetComponent<MeshFilter>().mesh;
@@ -37,10 +30,17 @@ public class Export : MonoBehaviour
         // save prefab
         PrefabUtility.SaveAsPrefabAssetAndConnect(copiedObj, prefabPath, InteractionMode.UserAction);
         Destroy(copiedObj);
+
+        return (prefabPath, roofMeshPath);
     }
 
-    public static void ExportMetadata()
+    public static void ExportMeta(string data, string fileName, string directory)
     {
+        string dataDir = $"{directory}/metadata";
+        Directory.CreateDirectory(dataDir);
+        string dataPath = $"{dataDir}/{fileName}_meta.json";
+        dataPath = AssetDatabase.GenerateUniqueAssetPath(dataPath);
+        File.WriteAllText(dataPath, data);
 
     }
 }

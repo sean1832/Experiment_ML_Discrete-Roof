@@ -32,12 +32,12 @@ public class Evaluation : MonoBehaviour
         return score;
     }
 
-    public static float SurfaceArea(GameObject obj, float multiplier = 1.0f)
+    public static (float score, float area) SurfaceArea(GameObject obj, float multiplier = 1.0f)
     {
         Mesh mesh = ProMeshUtilities.GetMesh(obj);
         float area = ProMeshAnalyse.CalcSurfaceArea(mesh);
         float score = area * multiplier;
 
-        return score;
+        return (score, area);
     }
 }

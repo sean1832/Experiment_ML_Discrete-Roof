@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Schema;
 using Unity.Mathematics;
@@ -144,7 +145,8 @@ public class Utilities : MonoBehaviour
         for (int i = 0; i < parent.transform.childCount; i++)
         {
             GameObject child = parent.transform.GetChild(i).gameObject;
-            if (child.name == filterName) foundChild[0] = child;
+            if (child.name.Contains(filterName)) foundChild[0] = child;
+            //if (child.name == filterName) foundChild[0] = child;
         }
         return foundChild[0];
     }

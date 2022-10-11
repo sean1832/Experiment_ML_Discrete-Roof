@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Mono.Cecil;
 using Unity.MLAgents;
@@ -34,13 +35,12 @@ public class Train : Agent
     [SerializeField] private GameObject _spawnLayer;
     [SerializeField] private Renderer _ground;
 
-    [Header("Sample export parameters")]
-    [SerializeField] private bool _enableSampleExport = false;
-    [SerializeField] private int _exportEpisodeStep = 10000;
+    //[Header("Sample export parameters")]
+    //[SerializeField] private bool _enableSampleExport = false;
+    //[SerializeField] private int _exportEpisodeStep = 10000;
 
     [Header("Export Parameters")]
     [SerializeField] private bool _enableExport = false;
-    [SerializeField] private bool  _isFinalResults = false;
     [SerializeField] private string _exportDirectory = "Assets/Prefabs/Outputs";
     [SerializeField] private string _exportPrefabName = "result";
 
@@ -108,7 +108,6 @@ public class Train : Agent
 
         CreateDummy();
         _idx = 1;
-        _targetEpisodeCount = _exportEpisodeStep;
     }
     #endregion
 
@@ -224,14 +223,23 @@ public class Train : Agent
                         yield return new WaitForSeconds(0.05f);
                         // other script execute after
                         GameObject roof = Utilities.SearchChild(exportPackage, "roof");
-                        float score = Evaluation.SurfaceArea(roof, 0.02f);
+                        (float score, float area) = Evaluation.SurfaceArea(roof, 0.02f);
 
                         AddReward(score);
-
                         // export
                         if (_enableExport)
                         {
-                            Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+                            string prefabPath = Export.ExportAsPrefab(exportPackage, _exportDirectory, _exportPrefabName).prefabPath;
+                            string prefabName = Path.GetFileName(prefabPath);
+
+                            string jsonData = ExportUtilities.GetJsonData(
+                                prefabName,
+                                GetCumulativeReward(),
+                                area,
+                                collidedCount,
+                                ProRoof.GetMaxHeight(exportPackage)
+                            );
+                            Export.ExportMeta(jsonData, prefabName, _exportDirectory);
                         }
 
                         // delete
@@ -241,7 +249,7 @@ public class Train : Agent
 
                 if (_enableExport && !_enableRoofGeneration) // export geometry as prefab
                 {
-                    Export.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
+                    Export.ExportAsPrefab(_spawnLayer, _exportDirectory, _exportPrefabName);
                 }
             }
             
@@ -295,15 +303,6 @@ public class Train : Agent
     #endregion
 
     #region Local Functions
-
-    private void ExportSamples(GameObject sample)
-    {
-        if (!_enableSampleExport) return;
-        if (CompletedEpisodes < _targetEpisodeCount) return;
-        print("exported");
-        //Export.ExportAsPrefab(sample, _exportDirectory, _exportPrefabName, _isFinalResults, CompletedEpisodes);
-        _targetEpisodeCount += _exportEpisodeStep;
-    }
 
     private void SetMaterial(Renderer renderer, Color color)
     {

@@ -39,7 +39,21 @@ public class ProRoof : MonoBehaviour
         return exportPackage;
     }
 
+    public static float GetMaxHeight(GameObject exportPackage)
+    {
+        GameObject structure = Utilities.SearchChild(exportPackage, "Spawned");
+        if (structure != null)
+        {
+            List<GameObject> joints = GetJoints(structure);
+            float height = Utilities.GetBounds(joints, "max").y;
+            return height;
+        }
+        else
+        {
+            throw new ArgumentException($"Cannot find Spawned layer, check filterName parameter!");
+        }
 
+    }
 
 
 

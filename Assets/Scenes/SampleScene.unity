@@ -489,7 +489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: _enableExport
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1300607177044323610, guid: 663c9ac457f3ee54bbbf1e1ff603e79b, type: 3}
       propertyPath: _exportDirectory
