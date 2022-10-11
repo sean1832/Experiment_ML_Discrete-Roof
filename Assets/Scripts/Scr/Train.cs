@@ -246,7 +246,6 @@ public class Train : Agent
                             );
                             Export.ExportMeta(jsonData, prefabName, _exportDirectory);
                         }
-                        print(_redundantActionCount);
                         _redundantActionCount = 0;
                         
 
