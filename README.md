@@ -4,6 +4,7 @@ A Unity project file that experiment with Reinforcement Learning using ML-Agents
 WARNING: This project is still work in progress.
 ## Download and install
 - This project requires python 3.7 to be installed
+- This project requires ml-agents to be installed in Unity package manager
 - This project recommend python virtual environment to be created under the project directory
     - Recommend installing pytorch with command `pip3 install torch~=1.7.1 -f https://download.pytorch.org/whl/torch_stable.html`
     - Required installing ML-Agent with command `pip install mlagents`
